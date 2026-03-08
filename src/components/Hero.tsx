@@ -130,8 +130,8 @@ export default function Hero() {
                 color: "#a855f7",
                 distance: 180,
                 enable: true,
-                opacity: 0.1,
-                width: 1,
+                opacity: 0.3,
+                width: 1.5,
             },
             move: {
                 direction: "none",
@@ -143,15 +143,15 @@ export default function Hero() {
             },
             number: {
                 density: { enable: true },
-                value: 150
+                value: 250
             },
             opacity: {
-                value: { min: 0.1, max: 0.8 },
+                value: { min: 0.3, max: 0.95 },
                 animation: { enable: true, speed: 1, sync: false }
             },
             shape: { type: "circle" },
             size: {
-                value: { min: 1, max: 2 },
+                value: { min: 1.5, max: 3 },
             },
             twinkle: {
                 particles: { enable: true, color: "#d8b4fe", frequency: 0.05, opacity: 1 }

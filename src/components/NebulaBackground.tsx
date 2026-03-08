@@ -59,8 +59,8 @@ export default function NebulaBackground() {
                     color: "#a855f7",
                     distance: 160,
                     enable: true,
-                    opacity: 0.15,
-                    width: 1,
+                    opacity: 0.4,
+                    width: 1.5,
                 },
                 move: {
                     direction: "none",
@@ -75,10 +75,10 @@ export default function NebulaBackground() {
                         enable: true,
                         area: 900,
                     },
-                    value: 120,
+                    value: 200,
                 },
                 opacity: {
-                    value: { min: 0.15, max: 0.4 },
+                    value: { min: 0.3, max: 0.7 },
                     animation: {
                         enable: true,
                         speed: 0.5,
@@ -89,7 +89,7 @@ export default function NebulaBackground() {
                     type: "circle",
                 },
                 size: {
-                    value: { min: 1, max: 3.5 },
+                    value: { min: 1.5, max: 4.5 },
                     animation: {
                         enable: true,
                         speed: 1.5,
