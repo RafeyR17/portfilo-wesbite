@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useSpring, useMotionValue, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, useSpring, useMotionValue } from "framer-motion";
 
 export default function CustomCursor() {
     const [isVisible, setIsVisible] = useState(false);
@@ -9,19 +9,17 @@ export default function CustomCursor() {
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
-    const springConfig = { damping: 20, stiffness: 400 };
-    const trailConfig = { damping: 30, stiffness: 200 };
+    const springConfig = { damping: 25, stiffness: 500 };
+    const trailConfig = { damping: 40, stiffness: 150 };
 
     const borderX = useSpring(cursorX, springConfig);
     const borderY = useSpring(cursorY, springConfig);
 
-    // Outer trail (slower follow)
-    const trailX = useSpring(cursorX, trailConfig);
-    const trailY = useSpring(cursorY, trailConfig);
-
-    // Dynamic size based on hovering state
-    const dotSize = isHovering ? 30 : 20;
-    const ringSize = isHovering ? 60 : 40;
+    // Trail elements
+    const trail1X = useSpring(cursorX, { damping: 30, stiffness: 200 });
+    const trail1Y = useSpring(cursorY, { damping: 30, stiffness: 200 });
+    const trail2X = useSpring(cursorX, { damping: 50, stiffness: 100 });
+    const trail2Y = useSpring(cursorY, { damping: 50, stiffness: 100 });
 
     useEffect(() => {
         const moveCursor = (e: MouseEvent) => {
@@ -33,7 +31,6 @@ export default function CustomCursor() {
         const handleMouseLeave = () => setIsVisible(false);
         const handleMouseEnter = () => setIsVisible(true);
 
-        // Detect hoverable elements
         const handleOverInteractive = () => setIsHovering(true);
         const handleOutInteractive = () => setIsHovering(false);
 
@@ -41,14 +38,22 @@ export default function CustomCursor() {
         window.addEventListener("mouseleave", handleMouseLeave);
         window.addEventListener("mouseenter", handleMouseEnter);
 
-        // Add hover detection to interactive elements
-        const interactiveElements = document.querySelectorAll(
-            "a, button, [role='button'], input, textarea, .glass-card, .project-card, .skill-card"
-        );
-        interactiveElements.forEach((el) => {
-            el.addEventListener("mouseenter", handleOverInteractive);
-            el.addEventListener("mouseleave", handleOutInteractive);
-        });
+        // Interactive elements detection
+        const updateInteractiveListeners = () => {
+            const elements = document.querySelectorAll(
+                "a, button, [role='button'], input, textarea, .glass-card, .project-card, .skill-card, .tech-badge"
+            );
+            elements.forEach((el) => {
+                el.addEventListener("mouseenter", handleOverInteractive);
+                el.addEventListener("mouseleave", handleOutInteractive);
+            });
+            return elements;
+        };
+
+        const interactiveElements = updateInteractiveListeners();
+
+        // Re-scan for dynamic elements if necessary (simple version)
+        const timer = setInterval(updateInteractiveListeners, 2000);
 
         return () => {
             window.removeEventListener("mousemove", moveCursor);
@@ -58,75 +63,64 @@ export default function CustomCursor() {
                 el.removeEventListener("mouseenter", handleOverInteractive);
                 el.removeEventListener("mouseleave", handleOutInteractive);
             });
+            clearInterval(timer);
         };
     }, [cursorX, cursorY, isVisible]);
 
-    // Don't render on touch devices
     if (typeof window !== "undefined" && "ontouchstart" in window) return null;
 
     return (
         <>
-            {/* Core dot — radial purple glow */}
+            {/* Trail 2 (Slowest) */}
             <motion.div
-                className="fixed top-0 left-0 rounded-full pointer-events-none z-[999]"
+                className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[997] opacity-20"
                 style={{
-                    x: cursorX,
-                    y: cursorY,
+                    x: trail2X,
+                    y: trail2Y,
                     translateX: "-50%",
                     translateY: "-50%",
-                    width: dotSize,
-                    height: dotSize,
-                    background: "radial-gradient(circle, #a855f7 0%, rgba(168,85,247,0.4) 60%, transparent 100%)",
-                    boxShadow: "0 0 12px rgba(168,85,247,0.6), 0 0 24px rgba(168,85,247,0.3)",
+                    background: "radial-gradient(circle, #a855f7 0%, transparent 70%)",
                 }}
-                animate={{
-                    scale: isVisible ? 1 : 0,
-                    width: dotSize,
-                    height: dotSize,
-                }}
-                transition={{ type: "spring", damping: 15, stiffness: 300 }}
             />
 
-            {/* Ring — spring follow */}
+            {/* Trail 1 */}
             <motion.div
-                className="fixed top-0 left-0 rounded-full pointer-events-none z-[998] border"
+                className="fixed top-0 left-0 w-6 h-6 rounded-full pointer-events-none z-[998] opacity-40"
+                style={{
+                    x: trail1X,
+                    y: trail1Y,
+                    translateX: "-50%",
+                    translateY: "-50%",
+                    background: "radial-gradient(circle, #a855f7 0%, transparent 70%)",
+                }}
+            />
+
+            {/* Main Orb */}
+            <motion.div
+                className="fixed top-0 left-0 rounded-full pointer-events-none z-[999] bg-purple-500"
                 style={{
                     x: borderX,
                     y: borderY,
                     translateX: "-50%",
                     translateY: "-50%",
-                    width: ringSize,
-                    height: ringSize,
-                    borderColor: isHovering
-                        ? "rgba(168, 85, 247, 0.6)"
-                        : "rgba(168, 85, 247, 0.25)",
+                    width: isHovering ? 28 : 22,
+                    height: isHovering ? 28 : 22,
                     boxShadow: isHovering
-                        ? "0 0 20px rgba(168,85,247,0.3)"
-                        : "none",
+                        ? "0 0 30px #a855f7, 0 0 60px rgba(168,85,247,0.4)"
+                        : "0 0 20px #a855f7",
                 }}
                 animate={{
                     scale: isVisible ? 1 : 0,
-                    width: ringSize,
-                    height: ringSize,
+                    opacity: isVisible ? 1 : 0,
                 }}
-                transition={{ type: "spring", damping: 20, stiffness: 250 }}
+                transition={{ duration: 0.2 }}
             />
 
-            {/* Outer trail glow — slowest follow */}
-            <motion.div
-                className="fixed top-0 left-0 w-20 h-20 rounded-full pointer-events-none z-[997]"
-                style={{
-                    x: trailX,
-                    y: trailY,
-                    translateX: "-50%",
-                    translateY: "-50%",
-                    background:
-                        "radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%)",
-                }}
-                animate={{
-                    scale: isVisible ? 1 : 0,
-                }}
-            />
+            <style jsx global>{`
+                body, a, button, [role='button'] {
+                    cursor: none !important;
+                }
+            `}</style>
         </>
     );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
 import {
     Atom, Lightbulb, FileCode2, FileCode, Palette, Film, Layout, Brush,
     Server, Box, Layers, TerminalSquare, Zap, Beaker,
@@ -71,129 +72,86 @@ const CATEGORIES = [
 export default function Skills() {
     const sectionRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            // Animate each category
-            const categories = sectionRef.current?.querySelectorAll(".skill-category");
-            categories?.forEach((cat, catIndex) => {
-                const cards = cat.querySelectorAll(".skill-orb");
-
-                gsap.from(cards, {
-                    scale: 0.6,
-                    opacity: 0,
-                    y: 30,
-                    duration: 0.5,
-                    stagger: 0.06,
-                    ease: "back.out(1.4)",
-                    scrollTrigger: {
-                        trigger: cat,
-                        start: "top 85%",
-                        toggleActions: "play none none none",
-                    },
-                });
-
-                // Subtle scroll rotation for skill cards
-                gsap.to(cards, {
-                    rotate: () => gsap.utils.random(-8, 8),
-                    y: () => gsap.utils.random(-15, 15),
-                    ease: "sine.inOut",
-                    scrollTrigger: {
-                        trigger: cat,
-                        start: "top bottom",
-                        end: "bottom top",
-                        scrub: 2,
-                    },
-                });
-
-                // Category title
-                const title = cat.querySelector(".cat-title");
-                if (title) {
-                    gsap.from(title, {
-                        x: catIndex % 2 === 0 ? -40 : 40,
-                        opacity: 0,
-                        duration: 0.6,
-                        ease: "power3.out",
-                        scrollTrigger: {
-                            trigger: cat,
-                            start: "top 85%",
-                            toggleActions: "play none none none",
-                        },
-                    });
-                }
-            });
-        }, sectionRef);
-
-        return () => ctx.revert();
-    }, []);
-
     return (
         <section ref={sectionRef} id="skills" className="py-32 px-4 md:px-10 max-w-7xl mx-auto">
             {/* Section heading */}
-            <div className="text-center mb-6 space-y-4">
-                <h2 className="text-4xl md:text-5xl font-serif font-bold text-white">
-                    My Toolkit for Building{" "}
-                    <span className="text-purple-400">the Future</span>
-                </h2>
-                <p className="text-purple-200/40 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-                    The technologies I wield to craft high-performance, immersive digital
-                    experiences — blending frontend finesse with robust backend architecture
-                    and reliable data layers.
-                </p>
+            <div className="text-center mb-16 space-y-4">
+                <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="text-4xl md:text-6xl font-serif font-bold text-white text-glow"
+                >
+                    My Technical{" "}
+                    <span className="text-purple-400">Toolkit</span>
+                </motion.h2>
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 }}
+                    className="text-purple-200/60 max-w-2xl mx-auto text-base md:text-lg leading-relaxed"
+                >
+                    The core technologies I use to architect high-performance, immersive
+                    digital experiences across the full development stack.
+                </motion.p>
             </div>
 
             {/* Categories */}
-            <div className="space-y-16 mt-16">
+            <div className="space-y-20">
                 {CATEGORIES.map((category, catIdx) => (
                     <div key={category.title} className="skill-category">
                         {/* Category header */}
-                        <div className="cat-title flex items-center gap-4 mb-8">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            className="flex items-center gap-6 mb-10"
+                        >
                             <div
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: category.color, boxShadow: `0 0 12px ${category.color}60` }}
+                                className="w-3 h-3 rounded-full shadow-[0_0_15px_#a855f7]"
+                                style={{ backgroundColor: category.color }}
                             />
-                            <div>
-                                <h3 className="text-lg font-serif font-bold text-white tracking-wide">
-                                    {category.title}
-                                </h3>
-                                <p className="text-xs text-purple-200/40 mt-0.5">
-                                    {category.description}
-                                </p>
-                            </div>
-                            {/* Connecting line */}
-                            <div className="flex-1 h-px bg-gradient-to-r from-purple-500/20 to-transparent" />
-                        </div>
+                            <h3 className="text-2xl font-serif font-bold text-white tracking-wide">
+                                {category.title}
+                            </h3>
+                            <div className="flex-1 h-px bg-gradient-to-r from-purple-500/30 to-transparent" />
+                        </motion.div>
 
-                        {/* Skills grid */}
-                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-9 gap-3">
-                            {category.skills.map((skill) => {
+                        {/* Skills grid: 4 columns desktop, 2 tablet, 1 mobile */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {category.skills.map((skill, index) => {
                                 const Icon = skill.icon;
                                 return (
-                                    <div
+                                    <motion.div
                                         key={skill.name}
-                                        className="skill-orb group relative"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: index * 0.05 }}
+                                        whileHover={{ scale: 1.08, y: -5 }}
+                                        className="group relative"
                                     >
-                                        <div className="glass-card rounded-2xl p-4 md:p-5 flex flex-col items-center gap-2.5 cursor-default hover-lift hover-glow">
+                                        <div className="glass-card backdrop-blur-xl bg-purple-950/20 border border-purple-500/20 rounded-3xl p-8 flex flex-col items-center gap-4 transition-all duration-500 hover:border-purple-400/50 hover:bg-purple-900/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.2)]">
                                             {/* Icon */}
                                             <div
-                                                className="text-2xl md:text-3xl grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
+                                                className="text-4xl md:text-5xl opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 filter drop-shadow-[0_0_8px_rgba(168,85,247,0.3)]"
                                                 style={{ color: skill.color }}
                                             >
                                                 <Icon />
                                             </div>
 
-                                            {/* Name */}
-                                            <span className="text-[9px] md:text-[10px] font-bold text-white/50 group-hover:text-white tracking-wider uppercase transition-colors text-center leading-tight">
-                                                {skill.name}
-                                            </span>
+                                            {/* Info */}
+                                            <div className="text-center">
+                                                <h4 className="text-lg font-bold text-white mb-1 group-hover:text-purple-200 transition-colors">
+                                                    {skill.name}
+                                                </h4>
+                                                <p className="text-xs text-purple-200/50 leading-relaxed font-sans">
+                                                    {skill.desc}
+                                                </p>
+                                            </div>
                                         </div>
-
-                                        {/* Tooltip */}
-                                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-2 bg-black/90 backdrop-blur-xl rounded-xl text-[10px] text-purple-200 font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none border border-purple-500/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] z-30">
-                                            {skill.desc}
-                                            {/* Arrow */}
-                                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black/90 border-r border-b border-purple-500/20 rotate-45" />
-                                        </div>
-                                    </div>
+                                    </motion.div>
                                 );
                             })}
                         </div>
@@ -202,12 +160,18 @@ export default function Skills() {
             </div>
 
             {/* Bottom note */}
-            <div className="mt-16 text-center">
-                <p className="text-xs text-purple-200/30 italic">
-                    Every tool here has powered real projects — from high-converting stores
-                    to interactive web apps that scale effortlessly.
+            <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5 }}
+                className="mt-20 text-center"
+            >
+                <p className="text-sm text-purple-200/30 italic font-sans max-w-xl mx-auto">
+                    Every tool in my kit is chosen for its ability to deliver premium,
+                    scalable, and high-performance digital products.
                 </p>
-            </div>
+            </motion.div>
         </section>
     );
 }

@@ -25,6 +25,15 @@ body {
   color: var(--foreground);
   overflow-x: hidden;
   overscroll-behavior: none;
+  cursor: none !important;
+}
+
+a,
+button,
+[role='button'],
+input,
+textarea {
+  cursor: none !important;
 }
 
 /* Glassmorphism Utility */

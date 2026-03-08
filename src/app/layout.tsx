@@ -60,7 +60,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://vitals.vercel-insights.com" />
       </head>
       <body
         className={`${playfair.variable} ${inter.variable} font-sans antialiased bg-black text-white selection:bg-purple-500/30 cursor-none md:cursor-none`}

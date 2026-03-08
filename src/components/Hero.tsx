@@ -111,7 +111,7 @@ export default function Hero() {
                     mode: "grab",
                     parallax: {
                         enable: true,
-                        force: 7,
+                        force: 5,
                         smooth: 10
                     }
                 },
@@ -119,42 +119,38 @@ export default function Hero() {
             },
             modes: {
                 grab: {
-                    distance: 200,
-                    links: { opacity: 0.25, color: "#a855f7" }
+                    distance: 140,
+                    links: { opacity: 0.2, color: "#a855f7" }
                 },
             },
         },
         particles: {
             color: { value: ["#a855f7", "#d8b4fe", "#ffffff"] },
             links: {
-                color: "#a855f7",
-                distance: 180,
-                enable: true,
-                opacity: 0.3,
-                width: 1.5,
+                enable: false, // Disabling links for performance
             },
             move: {
                 direction: "none",
                 enable: true,
                 outModes: { default: "out" },
                 random: true,
-                speed: { min: 0.3, max: 0.6 },
+                speed: { min: 0.4, max: 0.8 }, // Slightly faster as requested
                 straight: false,
             },
             number: {
-                density: { enable: true },
-                value: 250
+                density: { enable: true }, // Removed area property
+                value: isMobile ? 25 : 55 // Reduced particle count
             },
             opacity: {
-                value: { min: 0.3, max: 0.95 },
-                animation: { enable: true, speed: 1, sync: false }
+                value: { min: 0.2, max: 0.5 }, // Subtle range
+                animation: { enable: true, speed: 0.5, sync: false }
             },
             shape: { type: "circle" },
             size: {
-                value: { min: 1.5, max: 3 },
+                value: { min: 1, max: 2 },
             },
             twinkle: {
-                particles: { enable: true, color: "#d8b4fe", frequency: 0.05, opacity: 1 }
+                particles: { enable: true, color: "#d8b4fe", frequency: 0.03, opacity: 1 }
             }
         },
         detectRetina: true,
@@ -168,11 +164,11 @@ export default function Hero() {
         >
             {/* ── Layer 0: GLSL Hills Shader (lowest visual layer) ── */}
             {!prefersReducedMotion && (
-                <div className="absolute inset-0 z-0 pointer-events-none">
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-35">
                     <GLSLHills
                         cameraZ={150}
-                        speed={0.12}
-                        planeSize={isMobile ? 128 : 256}
+                        speed={0.3} // Faster rolling effect
+                        planeSize={isMobile ? 128 : 192} // Optimized plane size
                     />
                 </div>
             )}
@@ -182,7 +178,7 @@ export default function Hero() {
 
             {/* ── Layer 3: tsParticles with Mouse Parallax ── */}
             {init && (
-                <div className="absolute inset-0 z-[3] opacity-80 pointer-events-none">
+                <div className="absolute inset-0 z-[3] opacity-60 pointer-events-none">
                     <Particles
                         id="tsparticles"
                         options={particlesOptions}
