@@ -23,47 +23,41 @@ export default function CustomCursor() {
 
     useEffect(() => {
         const moveCursor = (e: MouseEvent) => {
-            cursorX.set(e.clientX);
-            cursorY.set(e.clientY);
-            if (!isVisible) setIsVisible(true);
+            // Set initial position immediately to avoid jump
+            if (!isVisible) {
+                cursorX.set(e.clientX);
+                cursorY.set(e.clientY);
+                setIsVisible(true);
+            } else {
+                cursorX.set(e.clientX);
+                cursorY.set(e.clientY);
+            }
         };
 
         const handleMouseLeave = () => setIsVisible(false);
         const handleMouseEnter = () => setIsVisible(true);
 
-        const handleOverInteractive = () => setIsHovering(true);
-        const handleOutInteractive = () => setIsHovering(false);
-
-        window.addEventListener("mousemove", moveCursor);
-        window.addEventListener("mouseleave", handleMouseLeave);
-        window.addEventListener("mouseenter", handleMouseEnter);
-
-        // Interactive elements detection
-        const updateInteractiveListeners = () => {
-            const elements = document.querySelectorAll(
-                "a, button, [role='button'], input, textarea, .glass-card, .project-card, .skill-card, .tech-badge"
-            );
-            elements.forEach((el) => {
-                el.addEventListener("mouseenter", handleOverInteractive);
-                el.addEventListener("mouseleave", handleOutInteractive);
-            });
-            return elements;
+        // Optimized event delegation for interactive elements
+        const handleMouseOver = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            const isInteractive = target.closest("a, button, [role='button'], input, textarea, .glass-card, .project-card, .skill-card, .tech-badge");
+            if (isInteractive) {
+                setIsHovering(true);
+            } else {
+                setIsHovering(false);
+            }
         };
 
-        const interactiveElements = updateInteractiveListeners();
-
-        // Re-scan for dynamic elements if necessary (simple version)
-        const timer = setInterval(updateInteractiveListeners, 2000);
+        window.addEventListener("mousemove", moveCursor, { passive: true });
+        window.addEventListener("mouseleave", handleMouseLeave);
+        window.addEventListener("mouseenter", handleMouseEnter);
+        window.addEventListener("mouseover", handleMouseOver, { passive: true });
 
         return () => {
             window.removeEventListener("mousemove", moveCursor);
             window.removeEventListener("mouseleave", handleMouseLeave);
             window.removeEventListener("mouseenter", handleMouseEnter);
-            interactiveElements.forEach((el) => {
-                el.removeEventListener("mouseenter", handleOverInteractive);
-                el.removeEventListener("mouseleave", handleOutInteractive);
-            });
-            clearInterval(timer);
+            window.removeEventListener("mouseover", handleMouseOver);
         };
     }, [cursorX, cursorY, isVisible]);
 

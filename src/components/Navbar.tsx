@@ -106,6 +106,7 @@ export default function Navbar() {
                                 <a
                                     key={link.name}
                                     href={link.href}
+                                    aria-label={`Go to ${link.name} section`}
                                     onClick={(e) => {
                                         e.preventDefault();
                                         handleNavClick(link.href);

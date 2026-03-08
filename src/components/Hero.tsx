@@ -6,9 +6,7 @@ import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
-import { initParticlesEngine } from "@tsparticles/react";
-import { loadSlim } from "@tsparticles/slim";
-import type { Engine, ISourceOptions } from "@tsparticles/engine";
+import type { ISourceOptions } from "@tsparticles/engine";
 
 const Particles = dynamic(() => import("@tsparticles/react"), { ssr: false });
 
@@ -49,14 +47,6 @@ export default function Hero() {
     const prefersReducedMotion = useReducedMotion();
     const isMobile = useIsMobile();
 
-    // Initialize particles engine
-    useEffect(() => {
-        initParticlesEngine(async (engine: Engine) => {
-            await loadSlim(engine);
-        }).then(() => {
-            setInit(true);
-        });
-    }, []);
 
     // GSAP Entrance Animations
     useEffect(() => {
@@ -101,60 +91,6 @@ export default function Hero() {
         return () => ctx.revert();
     }, []);
 
-    const particlesOptions: ISourceOptions = {
-        background: { color: { value: "transparent" } },
-        fpsLimit: 120,
-        interactivity: {
-            events: {
-                onHover: {
-                    enable: true,
-                    mode: "grab",
-                    parallax: {
-                        enable: true,
-                        force: 5,
-                        smooth: 10
-                    }
-                },
-                resize: { enable: true },
-            },
-            modes: {
-                grab: {
-                    distance: 140,
-                    links: { opacity: 0.2, color: "#a855f7" }
-                },
-            },
-        },
-        particles: {
-            color: { value: ["#a855f7", "#d8b4fe", "#ffffff"] },
-            links: {
-                enable: false, // Disabling links for performance
-            },
-            move: {
-                direction: "none",
-                enable: true,
-                outModes: { default: "out" },
-                random: true,
-                speed: { min: 0.4, max: 0.8 }, // Slightly faster as requested
-                straight: false,
-            },
-            number: {
-                density: { enable: true }, // Removed area property
-                value: isMobile ? 25 : 55 // Reduced particle count
-            },
-            opacity: {
-                value: { min: 0.2, max: 0.5 }, // Subtle range
-                animation: { enable: true, speed: 0.5, sync: false }
-            },
-            shape: { type: "circle" },
-            size: {
-                value: { min: 1, max: 2 },
-            },
-            twinkle: {
-                particles: { enable: true, color: "#d8b4fe", frequency: 0.03, opacity: 1 }
-            }
-        },
-        detectRetina: true,
-    };
 
     return (
         <section
@@ -176,16 +112,6 @@ export default function Hero() {
             {/* ── Layer 1: Overlay gradient to blend shader with cosmic background ── */}
             <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/10 via-purple-950/20 to-black/30 pointer-events-none" />
 
-            {/* ── Layer 3: tsParticles with Mouse Parallax ── */}
-            {init && (
-                <div className="absolute inset-0 z-[3] opacity-60 pointer-events-none">
-                    <Particles
-                        id="tsparticles"
-                        options={particlesOptions}
-                        className="h-full w-full"
-                    />
-                </div>
-            )}
 
             {/* ── Layer 4: Floating Radial Glow Orbs ── */}
             <div className="absolute top-[15%] left-[5%] w-[40rem] h-[40rem] bg-purple-600/15 blur-[150px] rounded-full animate-pulse-glow z-[4]" />
@@ -229,6 +155,7 @@ export default function Hero() {
                     <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-6 pt-4 opacity-0 animate-fade-up-stagger" style={{ animationDelay: "0.6s", animationFillMode: "forwards" }}>
                         <motion.a
                             href="#projects"
+                            aria-label="Explore my work projects"
                             whileHover={{ scale: 1.08, boxShadow: "0 0 60px rgba(168,85,247,0.7)" }}
                             whileTap={{ scale: 0.95 }}
                             className="glass-premium ripple-btn px-10 py-5 bg-purple-600/80 rounded-full text-white font-black text-sm tracking-[0.3em] uppercase transition-all shadow-lg text-center"

@@ -20,46 +20,43 @@ export default function NebulaBackground() {
         });
     }, []);
 
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, []);
+
     const options: ISourceOptions = useMemo(
         () => ({
-            background: {
-                color: { value: "transparent" },
-            },
+            background: { color: { value: "transparent" } },
             fullScreen: { enable: false },
-            fpsLimit: 120,
+            fpsLimit: 60,
             interactivity: {
                 events: {
                     onHover: {
                         enable: true,
                         mode: "grab",
-                        parallax: {
-                            enable: true,
-                            force: 5,
-                            smooth: 10,
-                        },
                     },
+                    resize: { enable: true },
                 },
                 modes: {
                     grab: {
-                        distance: 200,
-                        links: {
-                            blink: false,
-                            consent: false,
-                            opacity: 0.5,
-                            color: "#a855f7",
-                        },
+                        distance: 180,
+                        links: { opacity: 0.3, color: "#a855f7" }
                     },
                 },
             },
             particles: {
                 color: {
-                    value: ["#ffffff", "#a855f7", "#c084fc", "#ff00ff"],
+                    value: ["#a855f7", "#ffffff", "#d8b4fe"]
                 },
                 links: {
                     color: "#a855f7",
-                    distance: 160,
+                    distance: 150,
                     enable: true,
-                    opacity: 0.15,
+                    opacity: 0.2,
                     width: 1,
                 },
                 move: {
@@ -67,39 +64,46 @@ export default function NebulaBackground() {
                     enable: true,
                     outModes: { default: "out" },
                     random: true,
-                    speed: 0.3,
+                    speed: { min: 0.2, max: 0.6 },
                     straight: false,
                 },
                 number: {
                     density: {
                         enable: true,
-                        area: 900,
                     },
-                    value: 120,
+                    value: isMobile ? 30 : 80
                 },
                 opacity: {
-                    value: { min: 0.15, max: 0.4 },
+                    value: { min: 0.3, max: 0.7 },
                     animation: {
                         enable: true,
-                        speed: 0.5,
-                        sync: false,
-                    },
+                        speed: 1,
+                        sync: false
+                    }
                 },
                 shape: {
                     type: "circle",
                 },
                 size: {
-                    value: { min: 1, max: 3.5 },
+                    value: { min: 1, max: 2.5 },
                     animation: {
                         enable: true,
-                        speed: 1.5,
-                        sync: false,
-                    },
+                        speed: 2,
+                        sync: false
+                    }
                 },
+                twinkle: {
+                    particles: {
+                        enable: true,
+                        color: "#ffffff",
+                        frequency: 0.05,
+                        opacity: 1
+                    }
+                }
             },
             detectRetina: true,
         }),
-        []
+        [isMobile]
     );
 
     if (!init) return null;

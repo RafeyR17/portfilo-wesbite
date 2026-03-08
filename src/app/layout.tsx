@@ -75,9 +75,10 @@ export default function RootLayout({
           <NebulaBackground />
 
           {/* Ambient Global Orbs */}
-          <div className="fixed inset-0 pointer-events-none z-[-5]">
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/20 blur-[120px] rounded-full mix-blend-screen" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-fuchsia-600/20 blur-[120px] rounded-full mix-blend-screen" />
+          <div className="fixed inset-0 pointer-events-none z-[-5] overflow-hidden">
+            <div className="glow-orb orb-1" />
+            <div className="glow-orb orb-2" />
+            <div className="glow-orb orb-3" />
           </div>
 
           <div className="relative z-10">{children}</div>

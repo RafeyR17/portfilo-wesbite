@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, AnimatePresence } from "framer-motion";
-import confetti from "canvas-confetti";
 import { Send, Check, Github, Linkedin, Facebook, Instagram } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -128,7 +127,8 @@ export default function Contact() {
                 setFormData({ name: "", email: "", message: "" });
                 setIsSuccess(true);
 
-                // Cosmic confetti burst
+                // Cosmic confetti burst — dynamic import for performance
+                const { default: confetti } = await import("canvas-confetti");
                 const duration = 3000;
                 const end = Date.now() + duration;
                 const frame = () => {
