@@ -21,11 +21,8 @@ export default function CustomCursor() {
     const trail2X = useSpring(cursorX, { damping: 50, stiffness: 100 });
     const trail2Y = useSpring(cursorY, { damping: 50, stiffness: 100 });
 
-    const [isTouchDevice, setIsTouchDevice] = useState(false);
 
     useEffect(() => {
-        setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
-
         const moveCursor = (e: MouseEvent) => {
             // Set initial position immediately to avoid jump
             if (!isVisible) {
@@ -68,7 +65,7 @@ export default function CustomCursor() {
 
     return (
         <>
-            {!isTouchDevice && (
+            {isVisible && (
                 <>
                     {/* Trail 2 (Slowest) */}
                     <motion.div
@@ -108,9 +105,10 @@ export default function CustomCursor() {
                                 ? "0 0 30px #a855f7, 0 0 60px rgba(168,85,247,0.4)"
                                 : "0 0 20px #a855f7",
                         }}
+                        initial={{ scale: 0, opacity: 0 }}
                         animate={{
-                            scale: isVisible ? 1 : 0,
-                            opacity: isVisible ? 1 : 0,
+                            scale: 1,
+                            opacity: 1,
                         }}
                         transition={{ duration: 0.2 }}
                     />
