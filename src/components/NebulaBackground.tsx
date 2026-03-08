@@ -71,7 +71,7 @@ export default function NebulaBackground() {
                     density: {
                         enable: true,
                     },
-                    value: isMobile ? 30 : 80
+                    value: isMobile ? 50 : 120
                 },
                 opacity: {
                     value: { min: 0.3, max: 0.7 },

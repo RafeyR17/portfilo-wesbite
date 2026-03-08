@@ -100,7 +100,7 @@ export default function Hero() {
         >
             {/* ── Layer 0: GLSL Hills Shader (lowest visual layer) ── */}
             {!prefersReducedMotion && (
-                <div className="absolute inset-0 z-0 pointer-events-none opacity-35">
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
                     <GLSLHills
                         cameraZ={150}
                         speed={0.3} // Faster rolling effect
