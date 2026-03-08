@@ -21,7 +21,11 @@ export default function CustomCursor() {
     const trail2X = useSpring(cursorX, { damping: 50, stiffness: 100 });
     const trail2Y = useSpring(cursorY, { damping: 50, stiffness: 100 });
 
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
+
     useEffect(() => {
+        setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
         const moveCursor = (e: MouseEvent) => {
             // Set initial position immediately to avoid jump
             if (!isVisible) {
@@ -61,58 +65,63 @@ export default function CustomCursor() {
         };
     }, [cursorX, cursorY, isVisible]);
 
-    if (typeof window !== "undefined" && "ontouchstart" in window) return null;
 
     return (
         <>
-            {/* Trail 2 (Slowest) */}
-            <motion.div
-                className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[997] opacity-20"
-                style={{
-                    x: trail2X,
-                    y: trail2Y,
-                    translateX: "-50%",
-                    translateY: "-50%",
-                    background: "radial-gradient(circle, #a855f7 0%, transparent 70%)",
-                }}
-            />
+            {!isTouchDevice && (
+                <>
+                    {/* Trail 2 (Slowest) */}
+                    <motion.div
+                        className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[997] opacity-20"
+                        style={{
+                            x: trail2X,
+                            y: trail2Y,
+                            translateX: "-50%",
+                            translateY: "-50%",
+                            background: "radial-gradient(circle, #a855f7 0%, transparent 70%)",
+                        }}
+                    />
 
-            {/* Trail 1 */}
-            <motion.div
-                className="fixed top-0 left-0 w-6 h-6 rounded-full pointer-events-none z-[998] opacity-40"
-                style={{
-                    x: trail1X,
-                    y: trail1Y,
-                    translateX: "-50%",
-                    translateY: "-50%",
-                    background: "radial-gradient(circle, #a855f7 0%, transparent 70%)",
-                }}
-            />
+                    {/* Trail 1 */}
+                    <motion.div
+                        className="fixed top-0 left-0 w-6 h-6 rounded-full pointer-events-none z-[998] opacity-40"
+                        style={{
+                            x: trail1X,
+                            y: trail1Y,
+                            translateX: "-50%",
+                            translateY: "-50%",
+                            background: "radial-gradient(circle, #a855f7 0%, transparent 70%)",
+                        }}
+                    />
 
-            {/* Main Orb */}
-            <motion.div
-                className="fixed top-0 left-0 rounded-full pointer-events-none z-[999] bg-purple-500"
-                style={{
-                    x: borderX,
-                    y: borderY,
-                    translateX: "-50%",
-                    translateY: "-50%",
-                    width: isHovering ? 28 : 22,
-                    height: isHovering ? 28 : 22,
-                    boxShadow: isHovering
-                        ? "0 0 30px #a855f7, 0 0 60px rgba(168,85,247,0.4)"
-                        : "0 0 20px #a855f7",
-                }}
-                animate={{
-                    scale: isVisible ? 1 : 0,
-                    opacity: isVisible ? 1 : 0,
-                }}
-                transition={{ duration: 0.2 }}
-            />
+                    {/* Main Orb */}
+                    <motion.div
+                        className="fixed top-0 left-0 rounded-full pointer-events-none z-[999] bg-purple-500"
+                        style={{
+                            x: borderX,
+                            y: borderY,
+                            translateX: "-50%",
+                            translateY: "-50%",
+                            width: isHovering ? 28 : 22,
+                            height: isHovering ? 28 : 22,
+                            boxShadow: isHovering
+                                ? "0 0 30px #a855f7, 0 0 60px rgba(168,85,247,0.4)"
+                                : "0 0 20px #a855f7",
+                        }}
+                        animate={{
+                            scale: isVisible ? 1 : 0,
+                            opacity: isVisible ? 1 : 0,
+                        }}
+                        transition={{ duration: 0.2 }}
+                    />
+                </>
+            )}
 
             <style jsx global>{`
-                body, a, button, [role='button'] {
-                    cursor: none !important;
+                @media (pointer: fine) {
+                    body, a, button, [role='button'], input, textarea, .glass-card, .project-card, .skill-card {
+                        cursor: none !important;
+                    }
                 }
             `}</style>
         </>
