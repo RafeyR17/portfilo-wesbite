@@ -13,7 +13,7 @@ interface Project {
     tags: string[];
     image: string;
     primaryButton: { label: string; href: string; icon: "external" | "github" };
-    secondaryButton?: { label: string; href: string };
+    caseStudyHref: string;
 }
 
 const PROJECTS: Project[] = [
@@ -25,9 +25,10 @@ const PROJECTS: Project[] = [
         image: "/projects/ecommerce-1-store.png",
         primaryButton: {
             label: "Live Demo",
-            href: "#",
+            href: "https://naturalglow.vercel.app",
             icon: "external",
         },
+        caseStudyHref: "/case-studies/natural-glow",
     },
     {
         title: "Neon Void – Tech E-Commerce Store",
@@ -40,10 +41,7 @@ const PROJECTS: Project[] = [
             href: "https://github.com/RafeyR17/neon-void-store",
             icon: "github",
         },
-        secondaryButton: {
-            label: "Case Study",
-            href: "/projects/neon-void",
-        },
+        caseStudyHref: "/case-studies/neon-void",
     },
     {
         title: "AI Future Hub School System",
@@ -56,10 +54,7 @@ const PROJECTS: Project[] = [
             href: "https://www.aifuturehubschoolsystem.academy",
             icon: "external",
         },
-        secondaryButton: {
-            label: "View Details",
-            href: "/projects/ai-future-hub",
-        },
+        caseStudyHref: "/case-studies/ai-future-hub",
     },
     {
         title: "AI Resume & Cover Letter Builder SaaS",
@@ -72,10 +67,7 @@ const PROJECTS: Project[] = [
             href: "https://github.com/RafeyR17/AI-Powered-Resume-Cover-Letter-Builder-SaaS",
             icon: "github",
         },
-        secondaryButton: {
-            label: "Case Study",
-            href: "/projects/ai-resume-builder",
-        },
+        caseStudyHref: "/case-studies/ai-resume-builder",
     },
 ];
 
@@ -256,23 +248,22 @@ export default function Projects() {
                                         {project.primaryButton.label}
                                     </a>
 
-                                    {/* Secondary Button (optional) */}
-                                    {project.secondaryButton && (
-                                        <a
-                                            href={project.secondaryButton.href}
-                                            className="inline-flex items-center gap-2 px-6 py-3
+                                    {/* Case Study Button */}
+                                    <a
+                                        href={project.caseStudyHref}
+                                        className="inline-flex items-center gap-2 px-6 py-3
                                  border border-purple-500/60 text-purple-300 text-xs sm:text-sm font-semibold uppercase tracking-wider
                                  rounded-full bg-transparent
                                  hover:bg-purple-500/15 hover:text-purple-100 hover:border-purple-400/80
+                                 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]
                                  active:scale-[0.98]
                                  transition-all duration-300 ease-out
                                  focus:outline-none focus:ring-2 focus:ring-purple-500/70 focus:ring-offset-2 focus:ring-offset-black"
-                                            aria-label={`${project.secondaryButton.label} – ${project.title}`}
-                                        >
-                                            <ArrowUpRight size={16} />
-                                            {project.secondaryButton.label}
-                                        </a>
-                                    )}
+                                        aria-label={`View Case Study for ${project.title}`}
+                                    >
+                                        <ArrowUpRight size={16} />
+                                        Case Study
+                                    </a>
                                 </div>
                             </div>
 

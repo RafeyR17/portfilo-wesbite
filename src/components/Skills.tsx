@@ -1,177 +1,119 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import {
-    Atom, Lightbulb, FileCode2, FileCode, Palette, Film, Layout, Brush,
-    Server, Box, Layers, TerminalSquare, Zap, Beaker,
-    Database, Network, Triangle, Globe, GitBranch, Github, ShoppingCart
+    Layout, Type, Paintbrush, Move,
+    Server, Layers, Code2,
+    DatabaseZap, Database, Cloud, DatabaseBackup, Globe
 } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const CATEGORIES = [
+/**
+ * SKILLS DATA
+ * Refined to 12 essential skills for a modern Full-Stack Developer (2025-2026).
+ * Grouped into 3 sections for scanability.
+ */
+const SKILL_CATEGORIES = [
     {
-        title: "Frontend Magic",
-        description: "Dynamic, SEO-friendly apps with butter-smooth animations",
-        color: "#c084fc",
+        title: "Frontend",
         skills: [
-            { name: "React.js", icon: Atom, color: "#61DAFB", desc: "Dynamic, component-driven UIs" },
-            { name: "Next.js", icon: Lightbulb, color: "#ffffff", desc: "SEO-friendly, full-stack React" },
-            { name: "TypeScript", icon: FileCode2, color: "#3178C6", desc: "Type-safe logic & scalability" },
-            { name: "JavaScript", icon: FileCode, color: "#F7DF1E", desc: "Core language mastery" },
-            { name: "Tailwind CSS", icon: Palette, color: "#06B6D4", desc: "Rapid, consistent styling" },
-            { name: "Framer Motion", icon: Film, color: "#0055FF", desc: "Smooth declarative animations" },
-            { name: "GSAP", icon: () => <span className="text-lg font-black tracking-tighter">GS</span>, color: "#88CE02", desc: "Scroll magic & timelines" },
-            { name: "HTML5", icon: Layout, color: "#E34F26", desc: "Semantic, accessible markup" },
-            { name: "CSS3", icon: Brush, color: "#1572B6", desc: "Advanced layouts & effects" },
+            { name: "Next.js", icon: Layout, desc: "Full-stack React framework for production" },
+            { name: "TypeScript", icon: Type, desc: "Static typing for scalable JavaScript" },
+            { name: "Tailwind CSS", icon: Paintbrush, desc: "Modern utility-first styling system" },
+            { name: "Framer Motion", icon: Move, desc: "Production-ready motion library for React" },
         ],
     },
     {
-        title: "Backend Power",
-        description: "Scalable servers, fast APIs, real-time features & secure logic",
-        color: "#a855f7",
+        title: "Backend",
         skills: [
-            { name: "Node.js", icon: Server, color: "#339933", desc: "Event-driven servers & APIs" },
-            { name: "Express.js", icon: Box, color: "#ffffff", desc: "Lightweight, flexible routing" },
-            { name: "NestJS", icon: Layers, color: "#E0234E", desc: "Enterprise-grade TypeScript" },
-            { name: "Python", icon: TerminalSquare, color: "#3776AB", desc: "Versatile & powerful scripting" },
-            { name: "FastAPI", icon: Zap, color: "#009688", desc: "Async, high-perf APIs" },
-            { name: "Django", icon: Layers, color: "#092E20", desc: "Rapid full-featured backend" },
-            { name: "Flask", icon: Beaker, color: "#ffffff", desc: "Lightweight Python backend" },
+            { name: "Node.js", icon: Server, desc: "High-performance JavaScript runtime" },
+            { name: "NestJS", icon: Layers, desc: "Enterprise-grade Node.js framework" },
+            { name: "Python", icon: Code2, desc: "Versatile language for AI & backend services" },
         ],
     },
     {
-        title: "Data & Storage",
-        description: "Reliable, performant data handling — structured to flexible",
-        color: "#d8b4fe",
+        title: "Database & Tools",
         skills: [
-            { name: "PostgreSQL", icon: Database, color: "#4169E1", desc: "Advanced relational + JSON" },
-            { name: "MySQL", icon: Database, color: "#4479A1", desc: "Fast & reliable reads" },
-            { name: "MongoDB", icon: Database, color: "#47A248", desc: "Flexible NoSQL schemas" },
-            { name: "Prisma", icon: Network, color: "#2D3748", desc: "Type-safe ORM & migrations" },
-            { name: "Redis", icon: Zap, color: "#DC382D", desc: "Caching & real-time pub/sub" },
-        ],
-    },
-    {
-        title: "Deployment & Tools",
-        description: "Ship fast, collaborate seamlessly, scale globally",
-        color: "#e9d5ff",
-        skills: [
-            { name: "Vercel", icon: Triangle, color: "#ffffff", desc: "Instant global hosting" },
-            { name: "Netlify", icon: Globe, color: "#00C7B7", desc: "JAMstack deployments" },
-            { name: "Git", icon: GitBranch, color: "#F05032", desc: "Version control mastery" },
-            { name: "GitHub", icon: Github, color: "#ffffff", desc: "Collaboration & CI/CD" },
-            { name: "Shopify", icon: ShoppingCart, color: "#96BF48", desc: "E-commerce integrations" },
+            { name: "Prisma", icon: DatabaseZap, desc: "Next-generation TypeScript ORM" },
+            { name: "PostgreSQL", icon: Database, desc: "World's most advanced relational database" },
+            { name: "Supabase", icon: Cloud, desc: "Open-source Firebase alternative" },
+            { name: "MongoDB", icon: DatabaseBackup, desc: "Modern document-based NoSQL database" },
+            { name: "Three.js", icon: Globe, desc: "Powering immersive 3D web experiences" },
         ],
     },
 ];
 
 export default function Skills() {
-    const sectionRef = useRef<HTMLDivElement>(null);
-
     return (
-        <section ref={sectionRef} id="skills" className="py-32 px-4 md:px-10 max-w-7xl mx-auto">
-            {/* Section heading */}
-            <div className="text-center mb-16 space-y-4">
-                <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-4xl md:text-6xl font-serif font-bold text-white text-glow"
-                >
-                    My Technical{" "}
-                    <span className="text-purple-400">Toolkit</span>
-                </motion.h2>
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 }}
-                    className="text-purple-200/60 max-w-2xl mx-auto text-base md:text-lg leading-relaxed"
-                >
-                    The core technologies I use to architect high-performance, immersive
-                    digital experiences across the full development stack.
-                </motion.p>
+        <section id="skills" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+            {/* Section Headers */}
+            <div className="text-center mb-20">
+                <h2 className="text-4xl md:text-5xl font-serif font-bold text-white relative inline-block mb-4">
+                    Technical Expertise
+                    <span className="absolute -bottom-2 left-0 w-full h-1 bg-purple-500/50 rounded-full" />
+                </h2>
+                <p className="text-purple-200/60 mt-4 text-lg max-w-2xl mx-auto">
+                    A lean, high-impact toolkit focused on performance, scalability, and premium user experiences.
+                </p>
             </div>
 
-            {/* Categories */}
-            <div className="space-y-20">
-                {CATEGORIES.map((category, catIdx) => (
-                    <div key={category.title} className="skill-category">
-                        {/* Category header */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="flex items-center gap-6 mb-10"
-                        >
-                            <div
-                                className="w-3 h-3 rounded-full shadow-[0_0_15px_#a855f7]"
-                                style={{ backgroundColor: category.color }}
-                            />
-                            <h3 className="text-2xl font-serif font-bold text-white tracking-wide">
+            <div className="space-y-24">
+                {SKILL_CATEGORIES.map((category) => (
+                    <div key={category.title}>
+                        {/* Category Heading */}
+                        <div className="flex flex-col items-center mb-12">
+                            <h3 className="text-2xl md:text-3xl font-serif font-semibold text-purple-300 mb-2">
                                 {category.title}
                             </h3>
-                            <div className="flex-1 h-px bg-gradient-to-r from-purple-500/30 to-transparent" />
-                        </motion.div>
+                            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
+                        </div>
 
-                        {/* Skills grid: 4 columns desktop, 2 tablet, 1 mobile */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {category.skills.map((skill, index) => {
-                                const Icon = skill.icon;
-                                return (
-                                    <motion.div
-                                        key={skill.name}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ delay: index * 0.05 }}
-                                        whileHover={{ scale: 1.08, y: -5 }}
-                                        className="group relative"
-                                    >
-                                        <div className="glass-card backdrop-blur-xl bg-purple-950/20 border border-purple-500/20 rounded-3xl p-8 flex flex-col items-center gap-4 transition-all duration-500 hover:border-purple-400/50 hover:bg-purple-900/30 hover:shadow-[0_0_40px_rgba(168,85,247,0.2)]">
-                                            {/* Icon */}
-                                            <div
-                                                className="text-4xl md:text-5xl opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 filter drop-shadow-[0_0_8px_rgba(168,85,247,0.3)]"
-                                                style={{ color: skill.color }}
-                                            >
-                                                <Icon />
-                                            </div>
-
-                                            {/* Info */}
-                                            <div className="text-center">
-                                                <h4 className="text-lg font-bold text-white mb-1 group-hover:text-purple-200 transition-colors">
-                                                    {skill.name}
-                                                </h4>
-                                                <p className="text-xs text-purple-200/50 leading-relaxed font-sans">
-                                                    {skill.desc}
-                                                </p>
-                                            </div>
+                        {/* Responsive Grid: 3 col desktop, 2 col tablet, 1 col mobile */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {category.skills.map((skill) => (
+                                <motion.div
+                                    key={skill.name}
+                                    className="group relative"
+                                    // Desktop only hover effect via Framer Motion
+                                    whileHover={{
+                                        scale: 1.05,
+                                        y: -6,
+                                        transition: { duration: 0.3, ease: "easeOut" }
+                                    }}
+                                    whileFocus={{ scale: 1.05, y: -6 }}
+                                >
+                                    <div className="
+                    skill-card h-full
+                    backdrop-blur-xl bg-[#1e003c]/20 border border-[#a855f7]/40
+                    rounded-2xl p-8 flex flex-col items-center justify-center
+                    transition-all duration-300
+                    group-hover:border-[#a855f7]/60 group-hover:bg-[#1e003c]/40
+                    group-hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]
+                  ">
+                                        {/* Icon */}
+                                        <div className="mb-6 text-purple-400 group-hover:text-purple-300 transition-colors duration-300">
+                                            <skill.icon size={56} strokeWidth={1.5} />
                                         </div>
-                                    </motion.div>
-                                );
-                            })}
+
+                                        {/* Skill Name */}
+                                        <h4 className="text-xl font-bold text-white mb-2 leading-tight">
+                                            {skill.name}
+                                        </h4>
+
+                                        {/* Description: Fades in on hover/focus */}
+                                        <p className="
+                      text-sm text-purple-200/80 text-center leading-snug
+                      opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                    ">
+                                            {skill.desc}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            ))}
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Bottom note */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-                className="mt-20 text-center"
-            >
-                <p className="text-sm text-purple-200/30 italic font-sans max-w-xl mx-auto">
-                    Every tool in my kit is chosen for its ability to deliver premium,
-                    scalable, and high-performance digital products.
-                </p>
-            </motion.div>
         </section>
     );
 }

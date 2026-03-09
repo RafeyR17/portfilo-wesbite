@@ -9,10 +9,11 @@ import { Menu, X } from "lucide-react";
 gsap.registerPlugin(ScrollTrigger);
 
 const NAV_LINKS = [
-    { name: "Skills", href: "#skills" },
-    { name: "Works", href: "#projects" },
-    { name: "Story", href: "#about" },
-    { name: "Contact", href: "#contact" },
+    { name: "Skills", href: "/#skills" },
+    { name: "Works", href: "/#projects" },
+    { name: "Case Studies", href: "/case-studies" },
+    { name: "Story", href: "/#about" },
+    { name: "Contact", href: "/#contact" },
 ];
 
 export default function Navbar() {
@@ -28,12 +29,8 @@ export default function Navbar() {
             const currentY = window.scrollY;
             setScrolled(currentY > 50);
 
-            // Hide on scroll down, show on scroll up
-            if (currentY > lastScrollY.current && currentY > 400) {
-                setHidden(true);
-            } else {
-                setHidden(false);
-            }
+            // Keep visible everywhere as requested
+            setHidden(false);
             lastScrollY.current = currentY;
         };
 
@@ -43,15 +40,19 @@ export default function Navbar() {
 
     // Scroll spy — highlight active section
     useEffect(() => {
-        const sections = NAV_LINKS.map((link) =>
-            document.querySelector(link.href) as HTMLElement
-        ).filter(Boolean);
+        const sections = NAV_LINKS
+            .filter(link => link.href.includes("#"))
+            .map((link) => {
+                const id = link.href.split("#")[1];
+                return document.getElementById(id);
+            })
+            .filter(Boolean) as HTMLElement[];
 
         const observers = sections.map((section) => {
             const observer = new IntersectionObserver(
                 ([entry]) => {
                     if (entry.isIntersecting) {
-                        setActiveSection(`#${section.id}`);
+                        setActiveSection(`/#${section.id}`);
                     }
                 },
                 { rootMargin: "-40% 0px -55% 0px" }
@@ -63,10 +64,17 @@ export default function Navbar() {
         return () => observers.forEach((obs) => obs.disconnect());
     }, []);
 
-    const handleNavClick = (href: string) => {
+    const handleNavClick = (link: typeof NAV_LINKS[0]) => {
         setMobileOpen(false);
-        const el = document.querySelector(href);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
+        if (link.href.startsWith("/#")) {
+            const id = link.href.split("#")[1];
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: "smooth" });
+                return;
+            }
+        }
+        // Fallback for non-hash links or if element not found
     };
 
     return (
@@ -79,7 +87,7 @@ export default function Navbar() {
                 <motion.div
                     initial={{ y: -100, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 2.5, duration: 0.8, ease: "easeOut" }}
+                    transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
                     className={`flex items-center gap-2 md:gap-6 px-4 md:px-6 py-3 rounded-full transition-all duration-500 ${scrolled
                         ? "bg-[rgba(15,0,30,0.6)] backdrop-blur-2xl saturate-[180%] border border-purple-500/20 shadow-[0_8px_32px_rgba(168,85,247,0.12)]"
                         : "bg-white/[0.03] backdrop-blur-xl border border-white/[0.06]"
@@ -108,8 +116,10 @@ export default function Navbar() {
                                     href={link.href}
                                     aria-label={`Go to ${link.name} section`}
                                     onClick={(e) => {
-                                        e.preventDefault();
-                                        handleNavClick(link.href);
+                                        if (link.href.startsWith("/#")) {
+                                            e.preventDefault();
+                                            handleNavClick(link);
+                                        }
                                     }}
                                     className={`relative px-4 py-2 rounded-full text-[11px] uppercase tracking-[0.18em] transition-all duration-300 group ${isActive
                                         ? "text-purple-300 bg-purple-500/10"
@@ -129,10 +139,10 @@ export default function Navbar() {
 
                     {/* CTA */}
                     <a
-                        href="#contact"
+                        href="/#contact"
                         onClick={(e) => {
                             e.preventDefault();
-                            handleNavClick("#contact");
+                            handleNavClick({ name: "Contact", href: "/#contact" });
                         }}
                         className="hidden md:inline-flex items-center gap-1.5 bg-purple-500 hover:bg-purple-400 text-white px-6 py-3 rounded-full text-[11px] font-black transition-all uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_35px_rgba(168,85,247,0.6)] group"
                     >
@@ -177,8 +187,10 @@ export default function Navbar() {
                                 exit={{ opacity: 0, y: -20 }}
                                 transition={{ delay: i * 0.1 }}
                                 onClick={(e) => {
-                                    e.preventDefault();
-                                    handleNavClick(link.href);
+                                    if (link.href.startsWith("/#")) {
+                                        e.preventDefault();
+                                        handleNavClick(link);
+                                    }
                                 }}
                                 className={`text-3xl font-serif font-bold tracking-widest transition-colors ${activeSection === link.href
                                     ? "text-purple-400"
@@ -196,7 +208,7 @@ export default function Navbar() {
                             transition={{ delay: NAV_LINKS.length * 0.1 }}
                             onClick={(e) => {
                                 e.preventDefault();
-                                handleNavClick("#contact");
+                                handleNavClick({ name: "Contact", href: "/#contact" });
                             }}
                             className="mt-4 px-10 py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold uppercase tracking-widest text-sm transition-all shadow-[0_0_25px_rgba(168,85,247,0.4)]"
                         >
