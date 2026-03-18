@@ -166,8 +166,8 @@ export default function Contact() {
         <section ref={sectionRef} id="contact" className="py-32 px-4 md:px-10 max-w-5xl mx-auto">
             <div className="contact-form glass-card rounded-[3rem] p-8 md:p-16 relative overflow-hidden">
                 {/* Ambient glow */}
-                <div className="absolute top-0 right-0 w-72 h-72 bg-purple-600/8 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-800/10 blur-[80px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/20 blur-[140px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-800/25 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
                     {/* Left side */}

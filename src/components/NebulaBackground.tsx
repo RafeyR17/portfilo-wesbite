@@ -85,7 +85,7 @@ export default function NebulaBackground() {
                     type: "circle",
                 },
                 size: {
-                    value: { min: 1, max: 2.5 },
+                    value: { min: 2, max: 4.5 },
                     animation: {
                         enable: true,
                         speed: 2,

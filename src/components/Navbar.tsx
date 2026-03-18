@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,6 +24,8 @@ export default function Navbar() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const lastScrollY = useRef(0);
     const navRef = useRef<HTMLDivElement>(null);
+    const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -68,13 +71,21 @@ export default function Navbar() {
         setMobileOpen(false);
         if (link.href.startsWith("/#")) {
             const id = link.href.split("#")[1];
-            const el = document.getElementById(id);
-            if (el) {
-                el.scrollIntoView({ behavior: "smooth" });
+            if (pathname === "/") {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.scrollIntoView({ behavior: "smooth" });
+                    return;
+                }
+            } else {
+                router.push(link.href);
                 return;
             }
         }
-        // Fallback for non-hash links or if element not found
+        // Fallback for non-hash links or if element not found on home page
+        if (!link.href.includes("#")) {
+            router.push(link.href);
+        }
     };
 
     return (
@@ -95,10 +106,19 @@ export default function Navbar() {
                 >
                     {/* Logo */}
                     <a
-                        href="#"
+                        href="/#hero"
                         onClick={(e) => {
                             e.preventDefault();
-                            window.scrollTo({ top: 0, behavior: "smooth" });
+                            if (pathname === "/") {
+                                const hero = document.getElementById("hero");
+                                if (hero) {
+                                    hero.scrollIntoView({ behavior: "smooth" });
+                                } else {
+                                    window.scrollTo({ top: 0, behavior: "smooth" });
+                                }
+                            } else {
+                                router.push("/#hero");
+                            }
                         }}
                         className="text-lg font-serif font-bold text-white tracking-widest hover:text-purple-300 transition-colors group relative"
                     >
@@ -116,7 +136,7 @@ export default function Navbar() {
                                     href={link.href}
                                     aria-label={`Go to ${link.name} section`}
                                     onClick={(e) => {
-                                        if (link.href.startsWith("/#")) {
+                                        if (link.href.startsWith("/") || link.href.startsWith("#")) {
                                             e.preventDefault();
                                             handleNavClick(link);
                                         }
@@ -187,7 +207,7 @@ export default function Navbar() {
                                 exit={{ opacity: 0, y: -20 }}
                                 transition={{ delay: i * 0.1 }}
                                 onClick={(e) => {
-                                    if (link.href.startsWith("/#")) {
+                                    if (link.href.startsWith("/") || link.href.startsWith("#")) {
                                         e.preventDefault();
                                         handleNavClick(link);
                                     }

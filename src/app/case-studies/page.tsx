@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import CaseStudyCard from "@/components/case-studies/CaseStudyCard";
-import Breadcrumbs from "@/components/case-studies/Breadcrumbs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -9,44 +8,20 @@ export const metadata: Metadata = {
     description: "In-depth breakdowns of real-world projects — challenges, solutions, tech stacks, and business impact by Rafey Rashid.",
 };
 
-const CASE_STUDIES = [
-    {
-        title: "Natural Glow",
-        excerpt: "A high-performance e-commerce platform for organic cosmetics, focused on luxury and trust.",
-        image: "/images/case-studies/natural-glow.png",
-        slug: "natural-glow",
-        tags: ["Next.js 15", "Stripe", "Prisma", "PostgreSQL"],
-    },
-    {
-        title: "Neon Void",
-        excerpt: "Building an elite tech storefront for high-end peripherals with micro-animations and neon UI.",
-        image: "/images/case-studies/neon-void.png",
-        slug: "neon-void",
-        tags: ["Next.js 15", "Tailwind CSS", "Stripe", "Vercel"],
-    },
-    {
-        title: "AI Future Hub",
-        excerpt: "AI-powered educational platform for children, automating grading and personalizing feedback.",
-        image: "/images/case-studies/ai-future-hub.png",
-        slug: "ai-future-hub",
-        tags: ["Next.js 15", "NestJS", "FastAPI", "OpenAI"],
-    },
-    {
-        title: "AI Resume Builder",
-        excerpt: "A conversion-focused SaaS tool that tailors job applications using ATS-optimized AI logic.",
-        image: "/images/case-studies/ai-resume-builder.png",
-        slug: "ai-resume-builder",
-        tags: ["Next.js 15", "Stripe", "Groq", "PostgreSQL"],
-    },
-];
+import { PROJECTS } from "@/data/projects";
+
+const CASE_STUDIES = PROJECTS.map(p => ({
+    title: p.title,
+    excerpt: p.excerpt,
+    image: p.image,
+    slug: p.id,
+    tags: p.tags.slice(0, 4)
+}));
 
 export default function CaseStudiesPage() {
     return (
         <main className="min-h-screen pt-24 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
             <Navbar />
-
-            {/* Breadcrumbs */}
-            <Breadcrumbs />
 
             {/* Header */}
             <div className="mb-20">

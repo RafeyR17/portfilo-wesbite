@@ -79,6 +79,8 @@ export default function RootLayout({
             <div className="glow-orb orb-1" />
             <div className="glow-orb orb-2" />
             <div className="glow-orb orb-3" />
+            <div className="glow-orb orb-4" />
+            <div className="glow-orb orb-5" />
           </div>
 
           <div className="relative z-10">{children}</div>
