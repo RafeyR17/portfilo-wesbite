@@ -212,7 +212,7 @@ export default function Navbar() {
                                         handleNavClick(link);
                                     }
                                 }}
-                                className={`text-3xl font-serif font-bold tracking-widest transition-colors ${activeSection === link.href
+                                className={`text-2xl md:text-3xl font-serif font-bold tracking-widest transition-colors py-2 ${activeSection === link.href
                                     ? "text-purple-400"
                                     : "text-white/60 hover:text-purple-300"
                                     }`}
@@ -230,7 +230,7 @@ export default function Navbar() {
                                 e.preventDefault();
                                 handleNavClick({ name: "Contact", href: "/#contact" });
                             }}
-                            className="mt-4 px-10 py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold uppercase tracking-widest text-sm transition-all shadow-[0_0_25px_rgba(168,85,247,0.4)]"
+                            className="mt-6 px-10 py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold uppercase tracking-[0.2em] text-xs md:text-sm transition-all shadow-[0_0_25px_rgba(168,85,247,0.4)]"
                         >
                             Hire Me →
                         </motion.a>

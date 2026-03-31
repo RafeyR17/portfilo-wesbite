@@ -163,41 +163,41 @@ export default function Contact() {
     };
 
     return (
-        <section ref={sectionRef} id="contact" className="py-32 px-4 md:px-10 max-w-5xl mx-auto">
-            <div className="contact-form glass-card rounded-[3rem] p-8 md:p-16 relative overflow-hidden">
+        <section ref={sectionRef} id="contact" className="py-24 md:py-32 px-4 md:px-10 max-w-5xl mx-auto">
+            <div className="contact-form glass-card rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-16 relative overflow-hidden">
                 {/* Ambient glow */}
                 <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/20 blur-[140px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-800/25 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 relative z-10">
                     {/* Left side */}
-                    <div className="space-y-8">
-                        <h2 className="text-4xl md:text-5xl font-serif font-bold text-white leading-tight">
+                    <div className="space-y-6 md:space-y-8">
+                        <h2 className="text-3xl md:text-5xl font-serif font-bold text-white leading-tight">
                             Let&apos;s Create Something{" "}
                             <span className="text-purple-400">Epic.</span>
                         </h2>
-                        <p className="text-purple-100/50 text-lg leading-relaxed">
+                        <p className="text-purple-100/50 text-base md:text-lg leading-relaxed">
                             Whether you have a groundbreaking idea, need a premium web presence,
                             or just want to say hi — my inbox is always open.
                         </p>
 
                         {/* Social icons with orbit glow */}
-                        <div className="flex gap-3 pt-6">
+                        <div className="flex gap-3 pt-2 md:pt-6">
                             {SOCIALS.map((social, i) => {
                                 const Icon = social.icon;
                                 return (
                                     <a
                                         key={i}
                                         href={social.link}
-                                        className="group relative p-4 glass rounded-2xl hover:bg-purple-500/10 transition-all duration-300"
+                                        className="group relative p-3.5 md:p-4 glass rounded-xl md:rounded-2xl hover:bg-purple-500/10 transition-all duration-300"
                                         aria-label={social.label}
                                     >
                                         <Icon
-                                            size={22}
+                                            size={20}
                                             className="text-purple-300/70 group-hover:text-purple-300 transition-colors"
                                         />
                                         {/* Orbit ring */}
-                                        <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-purple-500/30 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.15)] transition-all duration-500" />
+                                        <div className="absolute inset-0 rounded-xl md:rounded-2xl border border-transparent group-hover:border-purple-500/30 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.15)] transition-all duration-500" />
                                     </a>
                                 );
                             })}
@@ -205,7 +205,7 @@ export default function Contact() {
                     </div>
 
                     {/* Right side — form */}
-                    <form className="space-y-5" onSubmit={handleSubmit}>
+                    <form className="space-y-4 md:space-y-5" onSubmit={handleSubmit}>
                         <FloatingInput
                             label="Your Name"
                             name="name"
@@ -234,9 +234,9 @@ export default function Contact() {
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.9 }}
-                                    className="w-full py-5 glass rounded-2xl text-center text-purple-300 font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3"
+                                    className="w-full py-4 md:py-5 glass rounded-xl md:rounded-2xl text-center text-purple-300 font-bold uppercase tracking-widest text-[10px] md:text-sm flex items-center justify-center gap-3"
                                 >
-                                    <Check size={20} className="text-green-400" />
+                                    <Check size={18} className="text-green-400" />
                                     Message Sent Successfully!
                                 </motion.div>
                             ) : (
@@ -246,17 +246,17 @@ export default function Contact() {
                                     disabled={isSubmitting}
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
-                                    className="w-full py-5 bg-purple-600 hover:bg-purple-500 disabled:opacity-60 text-white rounded-2xl font-bold uppercase tracking-widest text-sm transition-all shadow-[0_0_25px_rgba(168,85,247,0.3)] hover:shadow-[0_0_35px_rgba(168,85,247,0.5)] flex items-center justify-center gap-3"
+                                    className="w-full py-4 md:py-5 bg-purple-600 hover:bg-purple-500 disabled:opacity-60 text-white rounded-xl md:rounded-2xl font-bold uppercase tracking-widest text-xs md:text-sm transition-all shadow-[0_0_25px_rgba(168,85,247,0.3)] hover:shadow-[0_0_35px_rgba(168,85,247,0.5)] flex items-center justify-center gap-3"
                                 >
                                     {isSubmitting ? (
-                                        <div className="relative flex items-center justify-center w-6 h-6">
+                                        <div className="relative flex items-center justify-center w-5 h-5 md:w-6 md:h-6">
                                             <div className="absolute inset-0 rounded-full border-t-2 border-white border-r-2 border-transparent animate-spin" />
                                             <div className="absolute inset-1 rounded-full border-b-2 border-purple-300 border-l-2 border-transparent animate-spin" style={{ animationDirection: "reverse", animationDuration: "0.7s" }} />
                                             <div className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_10px_#fff] animate-pulse" />
                                         </div>
                                     ) : (
                                         <>
-                                            <Send size={18} />
+                                            <Send size={16} />
                                             Send Beam
                                         </>
                                     )}

@@ -56,13 +56,26 @@ const cardVariants = {
 
 /* ────────────────────── Component ────────────────────── */
 
+function useIsMobile(breakpoint = 768) {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < breakpoint);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, [breakpoint]);
+    return isMobile;
+}
+
 export default function Projects() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
     const shouldReduceMotion = useReducedMotion();
     const [init, setInit] = useState(false);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
+        if (isMobile) return; // Skip particles on mobile
         import("@tsparticles/react").then(({ initParticlesEngine }) => {
             initParticlesEngine(async (engine) => {
                 await loadSlim(engine);
@@ -70,7 +83,7 @@ export default function Projects() {
                 setInit(true);
             });
         });
-    }, []);
+    }, [isMobile]);
 
     const particlesOptions = {
         background: { color: { value: "transparent" } },
@@ -104,7 +117,7 @@ export default function Projects() {
             className="relative py-28 md:py-40 px-4 md:px-10 max-w-7xl mx-auto overflow-hidden"
         >
             {/* ── Purple Particle Background ── */}
-            {init && (
+            {init && !isMobile && (
                 <div className="absolute inset-0 pointer-events-none -z-10">
                     <Particles
                         id="projects-particles"
@@ -143,12 +156,12 @@ export default function Projects() {
                 </motion.div>
 
                 {/* ── Project Grid (2-column desktop, 1-column mobile) ── */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12">
                     {PROJECTS.map((project, index) => (
                         <motion.div
                             key={project.id}
                             variants={shouldReduceMotion ? undefined : cardVariants}
-                            className="group relative rounded-[2.5rem] overflow-hidden transition-all duration-700 ease-[power4.out]
+                            className="group relative rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden transition-all duration-700 ease-[power4.out]
                          bg-[rgba(30,0,60,0.18)] backdrop-blur-2xl
                          border border-[rgba(168,85,247,0.35)]
                          shadow-[0_8px_32px_rgba(0,0,0,0.5)]
@@ -157,7 +170,7 @@ export default function Projects() {
                          hover:border-[rgba(168,85,247,0.7)]"
                         >
                             {/* ── Image with Zoom Effect ── */}
-                            <div className="relative h-64 sm:h-72 md:h-80 overflow-hidden">
+                            <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden">
                                 <Image
                                     src={project.image}
                                     alt={project.title}
@@ -170,19 +183,19 @@ export default function Projects() {
                             </div>
 
                             {/* ── Content ── */}
-                            <div className="p-8 sm:p-10 space-y-6">
+                            <div className="p-6 md:p-10 space-y-5 md:space-y-6">
                                 <div className="space-y-4">
-                                    <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white group-hover:text-purple-200 transition-colors duration-300">
+                                    <h3 className="text-xl sm:text-3xl font-serif font-bold text-white group-hover:text-purple-200 transition-colors duration-300">
                                         {project.title}
                                     </h3>
-                                    <p className="text-purple-100/70 text-sm sm:text-base leading-relaxed line-clamp-2">
+                                    <p className="text-purple-100/70 text-xs sm:text-base leading-relaxed line-clamp-2">
                                         {project.excerpt}
                                     </p>
 
                                     {/* Results & Impact Mini-Section */}
                                     {PROJECT_RESULTS[project.id as keyof typeof PROJECT_RESULTS] && (
                                         <div className="pt-2">
-                                            <p className="text-purple-200/90 text-[xs] sm:text-sm italic font-medium flex items-center gap-2">
+                                            <p className="text-purple-200/90 text-[10px] sm:text-sm italic font-medium flex items-center gap-2">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.8)]" />
                                                 <span className="border-b border-purple-500/30 pb-0.5">
                                                     {PROJECT_RESULTS[project.id as keyof typeof PROJECT_RESULTS]}
@@ -193,11 +206,11 @@ export default function Projects() {
                                 </div>
 
                                 {/* Tech Badges */}
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-1.5 md:gap-2">
                                     {project.tags.map((tag) => (
                                         <span
                                             key={tag}
-                                            className="px-4 py-1.5 bg-purple-950/50 text-purple-200 text-xs font-semibold rounded-full
+                                            className="px-3 md:px-4 py-1 md:py-1.5 bg-purple-950/50 text-purple-200 text-[10px] md:text-xs font-semibold rounded-full
                                              border border-purple-500/20 group-hover:border-purple-500/40 transition-colors duration-300"
                                         >
                                             {tag}
@@ -206,17 +219,17 @@ export default function Projects() {
                                 </div>
 
                                 {/* Buttons */}
-                                <div className="flex flex-wrap items-center gap-4 pt-4">
+                                <div className="flex flex-wrap items-center gap-3 md:gap-4 pt-2 md:pt-4">
                                     <Link
                                         href={`/case-studies/${project.id}`}
-                                        className="inline-flex items-center gap-2 px-7 py-3.5
+                                        className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5
                                          bg-gradient-to-r from-purple-600 to-purple-800
-                                         text-white text-sm font-bold uppercase tracking-wider
+                                         text-white text-[11px] md:text-sm font-bold uppercase tracking-wider
                                          rounded-full shadow-[0_0_20px_rgba(168,85,247,0.3)]
                                          hover:shadow-[0_0_35px_rgba(168,85,247,0.6)]
                                          hover:scale-105 transition-all duration-300 active:scale-95"
                                     >
-                                        View Case Study <ArrowUpRight size={18} />
+                                        View Case Study <ArrowUpRight size={16} className="md:w-[18px] md:h-[18px]" />
                                     </Link>
 
                                     {project.caseStudy.githubUrl && (
@@ -224,11 +237,11 @@ export default function Projects() {
                                             href={project.caseStudy.githubUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-7 py-3.5
-                                             border border-purple-500/50 text-purple-300 text-sm font-bold uppercase tracking-wider
+                                            className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5
+                                             border border-purple-500/50 text-purple-300 text-[11px] md:text-sm font-bold uppercase tracking-wider
                                              rounded-full bg-transparent hover:bg-purple-500/10 hover:text-white transition-all duration-300"
                                         >
-                                            GitHub <Github size={18} />
+                                            GitHub <Github size={16} className="md:w-[18px] md:h-[18px]" />
                                         </a>
                                     )}
 
@@ -237,11 +250,11 @@ export default function Projects() {
                                             href={project.caseStudy.liveUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-7 py-3.5
-                                             border border-purple-500/50 text-purple-300 text-sm font-bold uppercase tracking-wider
+                                            className="inline-flex items-center gap-2 px-6 md:px-7 py-3 md:py-3.5
+                                             border border-purple-500/50 text-purple-300 text-[11px] md:text-sm font-bold uppercase tracking-wider
                                              rounded-full bg-transparent hover:bg-purple-500/10 hover:text-white transition-all duration-300"
                                         >
-                                            Live Demo <ExternalLink size={18} />
+                                            Live Demo <ExternalLink size={16} className="md:w-[18px] md:h-[18px]" />
                                         </a>
                                     )}
                                 </div>

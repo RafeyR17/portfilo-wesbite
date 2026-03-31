@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GraduationCap, Trophy, Laptop, Medal, Rocket, FileBadge } from "lucide-react";
@@ -46,9 +46,21 @@ const JOURNEY = [
     },
 ];
 
+function useIsMobile(breakpoint = 768) {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < breakpoint);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, [breakpoint]);
+    return isMobile;
+}
+
 export default function About() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const lineRef = useRef<HTMLDivElement>(null);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -64,7 +76,7 @@ export default function About() {
                             trigger: sectionRef.current,
                             start: "top 95%",
                             end: "bottom 90%",
-                            scrub: 1.5,
+                            scrub: isMobile ? 0.5 : 1.5, // Faster/Simpler scrub on mobile
                         },
                     }
                 );
@@ -107,20 +119,20 @@ export default function About() {
         }, sectionRef);
 
         return () => ctx.revert();
-    }, []);
+    }, [isMobile]);
 
     return (
         <section ref={sectionRef} id="about" className="py-32 px-4 md:px-10 relative overflow-hidden">
-            {/* Background glow for depth */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 blur-[150px] rounded-full pointer-events-none" />
+            {/* Background glow for depth - smaller on mobile */}
+            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${isMobile ? 'w-[300px] h-[300px] blur-[80px]' : 'w-[800px] h-[800px] blur-[150px]'} bg-purple-900/10 rounded-full pointer-events-none`} />
 
             <div className="max-w-6xl mx-auto relative z-10">
                 {/* Header */}
-                <div className="text-center mb-24 space-y-6">
-                    <h2 className="text-5xl md:text-7xl font-serif font-bold text-white text-glow">
+                <div className="text-center mb-16 md:mb-24 space-y-4 md:space-y-6">
+                    <h2 className="text-4xl md:text-7xl font-serif font-bold text-white text-glow">
                         My Journey in <span className="text-purple-400">Code</span>
                     </h2>
-                    <p className="text-purple-200/80 max-w-2xl mx-auto text-base md:text-lg leading-relaxed font-sans font-light">
+                    <p className="text-purple-200/80 max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-sans font-light">
                         From Harvard foundations to global recognition — a self-driven path of
                         learning, competition, and shipping real-world projects that shape my
                         expertise today.
@@ -128,7 +140,7 @@ export default function About() {
                 </div>
 
                 {/* Vertical Timeline */}
-                <div className="relative max-w-5xl mx-auto mt-20">
+                <div className="relative max-w-5xl mx-auto mt-12 md:mt-20">
                     {/* Central Line (Draws on scroll) */}
                     <div className="absolute left-[24px] md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-1 bg-purple-900/40 rounded-full">
                         <div
@@ -146,43 +158,43 @@ export default function About() {
                             return (
                                 <div key={index} className="relative flex items-center w-full">
                                     {/* Center Dot + Icon */}
-                                    <div className="absolute left-[24px] md:left-1/2 transform -translate-x-1/2 w-12 h-12 bg-black rounded-full border-2 border-purple-500 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)] z-20 timeline-dot group-hover:scale-110 transition-all duration-300">
+                                    <div className="absolute left-[24px] md:left-1/2 transform -translate-x-1/2 w-10 h-10 md:w-12 md:h-12 bg-black rounded-full border-2 border-purple-500 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)] z-20 timeline-dot group-hover:scale-110 transition-all duration-300">
                                         <div className="absolute inset-0 rounded-full bg-purple-500/30 animate-ping opacity-20" />
-                                        <Icon className="text-purple-300 text-xl relative z-10" />
+                                        <Icon className="text-purple-300 text-base md:text-xl relative z-10" />
                                     </div>
 
                                     {/* Card Container */}
                                     <div
-                                        className={`w-full md:w-1/2 pl-[80px] md:pl-0 ${isLeft ? "md:pr-16" : "md:pl-16 md:ml-auto"
+                                        className={`w-full md:w-1/2 pl-[60px] md:pl-0 ${isLeft ? "md:pr-16" : "md:pl-16 md:ml-auto"
                                             }`}
                                     >
                                         <div className="timeline-card group cursor-default relative">
-                                            <div className="glass-card hover-lift hover-glow p-8 md:p-10 rounded-3xl border border-purple-500/20 backdrop-blur-2xl bg-purple-950/20 relative overflow-hidden">
+                                            <div className="glass-card hover-lift hover-glow p-6 md:p-10 rounded-2xl md:rounded-3xl border border-purple-500/20 backdrop-blur-2xl bg-purple-950/20 relative overflow-hidden">
 
                                                 {/* Holographic edge shimmer (CSS trick) */}
-                                                <div className="absolute inset-[-1px] rounded-3xl bg-gradient-to-tr from-transparent via-purple-400/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none blur-[1px]" />
+                                                <div className="absolute inset-[-1px] rounded-2xl md:rounded-3xl bg-gradient-to-tr from-transparent via-purple-400/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none blur-[1px]" />
 
                                                 {/* Hover glow effect behind card text */}
                                                 <div className="absolute top-0 left-0 w-full h-full bg-radial-gradient from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-screen" />
 
                                                 {/* Year Badge */}
-                                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 mb-6">
+                                                <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1 md:py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 mb-4 md:mb-6">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                                                    <span className="text-xs font-bold text-purple-300 tracking-[0.2em] font-sans">
+                                                    <span className="text-[10px] md:text-xs font-bold text-purple-300 tracking-[0.15em] md:tracking-[0.2em] font-sans">
                                                         {item.year}
                                                     </span>
                                                 </div>
 
                                                 {/* Content */}
-                                                <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-4 leading-tight group-hover:text-purple-200 transition-colors">
+                                                <h3 className="text-lg md:text-3xl font-serif font-bold text-white mb-3 md:mb-4 leading-tight group-hover:text-purple-200 transition-colors">
                                                     {item.title}
                                                 </h3>
-                                                <p className="text-white/70 leading-relaxed font-sans text-sm md:text-base font-light">
+                                                <p className="text-white/70 leading-relaxed font-sans text-xs md:text-base font-light">
                                                     {item.desc}
                                                 </p>
 
                                                 {/* Optional interactive particles on hover (css trick) */}
-                                                <div className="absolute inset-0 border-2 border-transparent group-hover:border-purple-500/10 rounded-3xl transition-colors duration-700 pointer-events-none" />
+                                                <div className="absolute inset-0 border-2 border-transparent group-hover:border-purple-500/10 rounded-2xl md:rounded-3xl transition-colors duration-700 pointer-events-none" />
                                             </div>
                                         </div>
                                     </div>

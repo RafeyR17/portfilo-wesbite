@@ -103,11 +103,23 @@ function highlightText(text: string, highlight: string) {
     );
 }
 
+function useIsMobile(breakpoint = 768) {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < breakpoint);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, [breakpoint]);
+    return isMobile;
+}
+
 export default function Testimonials() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [direction, setDirection] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -129,15 +141,15 @@ export default function Testimonials() {
         return () => ctx.revert();
     }, []);
 
-    // Auto-advance every 6s
+    // Auto-advance: Slower on mobile to save performance
     useEffect(() => {
         if (isPaused) return;
         const interval = setInterval(() => {
             setDirection(1);
             setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-        }, 6000);
+        }, isMobile ? 8000 : 6000);
         return () => clearInterval(interval);
-    }, [activeIndex, isPaused]);
+    }, [activeIndex, isPaused, isMobile]);
 
     const navigate = (dir: number) => {
         setDirection(dir);

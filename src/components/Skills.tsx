@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
     Layout, Type, Paintbrush, Move,
@@ -42,7 +43,19 @@ const SKILL_CATEGORIES = [
     },
 ];
 
+function useIsMobile(breakpoint = 768) {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < breakpoint);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, [breakpoint]);
+    return isMobile;
+}
+
 export default function Skills() {
+    const isMobile = useIsMobile();
     return (
         <section id="skills" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
             {/* Section Headers */}
@@ -68,7 +81,7 @@ export default function Skills() {
                         </div>
 
                         {/* Responsive Grid: 3 col desktop, 2 col tablet, 1 col mobile */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                             {category.skills.map((skill) => (
                                 <motion.div
                                     key={skill.name}
@@ -84,25 +97,25 @@ export default function Skills() {
                                     <div className="
                     skill-card h-full
                     backdrop-blur-xl bg-[#1e003c]/20 border border-[#a855f7]/40
-                    rounded-2xl p-8 flex flex-col items-center justify-center
+                    rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center
                     transition-all duration-300
                     group-hover:border-[#a855f7]/60 group-hover:bg-[#1e003c]/40
                     group-hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]
                   ">
                                         {/* Icon */}
-                                        <div className="mb-6 text-purple-400 group-hover:text-purple-300 transition-colors duration-300">
-                                            <skill.icon size={56} strokeWidth={1.5} />
+                                        <div className="mb-4 md:mb-6 text-purple-400 group-hover:text-purple-300 transition-colors duration-300">
+                                            <skill.icon size={isMobile ? 44 : 56} strokeWidth={1.5} />
                                         </div>
 
                                         {/* Skill Name */}
-                                        <h4 className="text-xl font-bold text-white mb-2 leading-tight">
+                                        <h4 className="text-lg md:text-xl font-bold text-white mb-2 leading-tight">
                                             {skill.name}
                                         </h4>
 
-                                        {/* Description: Fades in on hover/focus */}
+                                        {/* Description: Fades in on hover/focus on desktop, always visible on mobile */}
                                         <p className="
-                      text-sm text-purple-200/80 text-center leading-snug
-                      opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                      text-xs md:text-sm text-purple-200/80 text-center leading-snug
+                      md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300
                     ">
                                             {skill.desc}
                                         </p>
