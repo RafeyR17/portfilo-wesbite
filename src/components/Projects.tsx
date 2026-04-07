@@ -56,16 +56,7 @@ const cardVariants = {
 
 /* ────────────────────── Component ────────────────────── */
 
-function useIsMobile(breakpoint = 768) {
-    const [isMobile, setIsMobile] = useState(false);
-    useEffect(() => {
-        const check = () => setIsMobile(window.innerWidth < breakpoint);
-        check();
-        window.addEventListener("resize", check);
-        return () => window.removeEventListener("resize", check);
-    }, [breakpoint]);
-    return isMobile;
-}
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 export default function Projects() {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -134,13 +125,14 @@ export default function Projects() {
             </div>
 
             <motion.div
-                variants={shouldReduceMotion ? undefined : sectionVariants}
-                initial="hidden"
-                animate={isInView ? "visible" : "hidden"}
+                variants={sectionVariants}
+                initial={isMobile ? "visible" : "hidden"}
+                whileInView="visible"
+                viewport={{ once: true }}
             >
                 {/* ── Heading ── */}
                 <motion.div
-                    variants={shouldReduceMotion ? undefined : headingVariants}
+                    variants={isMobile ? {} : headingVariants}
                     className="text-center mb-16 md:mb-24 space-y-6"
                 >
                     <h2 className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold text-white text-glow">
@@ -160,14 +152,12 @@ export default function Projects() {
                     {PROJECTS.map((project, index) => (
                         <motion.div
                             key={project.id}
-                            variants={shouldReduceMotion ? undefined : cardVariants}
-                            className="group relative rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden transition-all duration-700 ease-[power4.out]
+                            variants={isMobile ? {} : cardVariants}
+                            className={`group relative rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden transition-all duration-700 ease-[power4.out]
                          bg-[rgba(30,0,60,0.18)] backdrop-blur-2xl
                          border border-[rgba(168,85,247,0.35)]
                          shadow-[0_8px_32px_rgba(0,0,0,0.5)]
-                         hover:-translate-y-4 hover:scale-[1.03]
-                         hover:shadow-[0_0_50px_rgba(168,85,247,0.4),0_20px_60px_rgba(0,0,0,0.6)]
-                         hover:border-[rgba(168,85,247,0.7)]"
+                         ${isMobile ? '' : 'hover:-translate-y-4 hover:scale-[1.03] hover:shadow-[0_0_50px_rgba(168,85,247,0.4),0_20px_60px_rgba(0,0,0,0.6)] hover:border-[rgba(168,85,247,0.7)]'}`}
                         >
                             {/* ── Image with Zoom Effect ── */}
                             <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden">
@@ -265,7 +255,7 @@ export default function Projects() {
 
                 {/* ── ML Experiments Link ── */}
                 <motion.div
-                    variants={shouldReduceMotion ? undefined : cardVariants}
+                    variants={isMobile ? {} : cardVariants}
                     className="mt-16 md:mt-24 flex justify-center"
                 >
                     <Link

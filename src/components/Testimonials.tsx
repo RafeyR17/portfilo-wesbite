@@ -103,16 +103,7 @@ function highlightText(text: string, highlight: string) {
     );
 }
 
-function useIsMobile(breakpoint = 768) {
-    const [isMobile, setIsMobile] = useState(false);
-    useEffect(() => {
-        const check = () => setIsMobile(window.innerWidth < breakpoint);
-        check();
-        window.addEventListener("resize", check);
-        return () => window.removeEventListener("resize", check);
-    }, [breakpoint]);
-    return isMobile;
-}
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 export default function Testimonials() {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -122,6 +113,7 @@ export default function Testimonials() {
     const isMobile = useIsMobile();
 
     useEffect(() => {
+        if (isMobile) return; // Disable GSAP on mobile
         const ctx = gsap.context(() => {
             const heading = sectionRef.current?.querySelector(".testimonial-heading");
             if (heading) {
@@ -139,7 +131,7 @@ export default function Testimonials() {
             }
         }, sectionRef);
         return () => ctx.revert();
-    }, []);
+    }, [isMobile]);
 
     // Auto-advance: Slower on mobile to save performance
     useEffect(() => {
@@ -163,9 +155,9 @@ export default function Testimonials() {
 
     const variants = {
         enter: (dir: number) => ({
-            x: dir > 0 ? 80 : -80,
-            opacity: 0,
-            scale: 0.96,
+            x: isMobile ? 0 : (dir > 0 ? 80 : -80),
+            opacity: isMobile ? 1 : 0,
+            scale: isMobile ? 1 : 0.96,
         }),
         center: {
             x: 0,
@@ -173,9 +165,9 @@ export default function Testimonials() {
             scale: 1,
         },
         exit: (dir: number) => ({
-            x: dir > 0 ? -80 : 80,
-            opacity: 0,
-            scale: 0.96,
+            x: isMobile ? 0 : (dir > 0 ? -80 : 80),
+            opacity: isMobile ? 1 : 0,
+            scale: isMobile ? 1 : 0.96,
         }),
     };
 
@@ -209,7 +201,7 @@ export default function Testimonials() {
                             initial="enter"
                             animate="center"
                             exit="exit"
-                            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+                            transition={isMobile ? { duration: 0 } : { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
                             className="p-8 md:p-14"
                         >
                             <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 items-center">

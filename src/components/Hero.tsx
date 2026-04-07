@@ -50,6 +50,8 @@ export default function Hero() {
 
     // GSAP Entrance Animations
     useEffect(() => {
+        if (isMobile) return; // Disable GSAP on mobile
+
         const ctx = gsap.context(() => {
             const tl = gsap.timeline({ defaults: { ease: "power4.out", duration: 1.2 } });
 
@@ -89,7 +91,7 @@ export default function Hero() {
         }, sectionRef);
 
         return () => ctx.revert();
-    }, []);
+    }, [isMobile]);
 
 
     return (
@@ -124,10 +126,10 @@ export default function Hero() {
                 </>
             )}
             
-            <div className={`absolute bottom-[30%] ${isMobile ? 'left-[10%] w-[15rem] h-[15rem]' : 'left-[20%] w-[25rem] h-[25rem]'} bg-purple-500/10 blur-[80px] md:blur-[120px] rounded-full animate-pulse-glow z-[4]`} style={{ animationDelay: "-1s" }} />
+            <div className={`absolute bottom-[30%] ${isMobile ? 'left-[10%] w-[15rem] h-[15rem]' : 'left-[20%] w-[25rem] h-[25rem]'} bg-purple-500/10 blur-[80px] md:blur-[120px] rounded-full z-[4] ${isMobile ? '' : 'animate-pulse-glow'}`} style={{ animationDelay: "-1s" }} />
 
             {/* ── Layer 10: Hero Content ── */}
-            <div className="container mx-auto px-6 z-10 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+            <div className="container mx-auto px-6 z-10 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 pt-20">
 
                 {/* Text Content */}
                 <div ref={contentRef} className="hero-content flex-1 text-center lg:text-left space-y-6 md:space-y-8 order-1">
@@ -142,38 +144,38 @@ export default function Hero() {
                         <h1
                             className="font-serif font-black tracking-tighter metallic-text block"
                             style={{
-                                fontSize: "clamp(3.5rem, 12vw, 14rem)",
+                                fontSize: "clamp(3rem, 10vw, 14rem)",
                                 lineHeight: 0.92,
                                 filter: isMobile ? "none" : "drop-shadow(0 0 40px rgba(168,85,247,0.5))"
                             }}
                         >
                             Rafey Rashid
                         </h1>
-                        <h2 className="text-xl md:text-4xl lg:text-5xl font-sans font-medium text-purple-200/90 leading-tight max-w-2xl opacity-0 animate-fade-up-stagger" style={{ animationDelay: "0.2s", animationFillMode: "forwards" }}>
+                        <h2 className={`text-xl md:text-4xl lg:text-5xl font-sans font-medium text-purple-200/90 leading-tight max-w-2xl ${isMobile ? 'opacity-100' : 'opacity-0 animate-fade-up-stagger'}`} style={isMobile ? {} : { animationDelay: "0.2s", animationFillMode: "forwards" }}>
                             Web Developer & Creator of <span className="text-white">Immersive Digital Worlds</span>
                         </h2>
                     </div>
 
-                    <p className="text-base md:text-xl text-white/70 font-sans leading-relaxed max-w-xl mx-auto lg:mx-0 opacity-0 animate-fade-up-stagger" style={{ animationDelay: "0.4s", animationFillMode: "forwards" }}>
+                    <p className={`text-base md:text-xl text-white/70 font-sans leading-relaxed max-w-xl mx-auto lg:mx-0 ${isMobile ? 'opacity-100' : 'opacity-0 animate-fade-up-stagger'}`} style={isMobile ? {} : { animationDelay: "0.4s", animationFillMode: "forwards" }}>
                         Crafting high-converting <span className="text-purple-300">e-commerce stores</span> and powerful <span className="text-purple-300">web apps</span> that captivate — 50+ projects shipped & counting.
                     </p>
 
                     {/* CTAs */}
-                    <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 md:gap-6 pt-4 opacity-0 animate-fade-up-stagger" style={{ animationDelay: "0.6s", animationFillMode: "forwards" }}>
+                    <div className={`flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 md:gap-6 pt-4 ${isMobile ? 'opacity-100' : 'opacity-0 animate-fade-up-stagger'}`} style={isMobile ? {} : { animationDelay: "0.6s", animationFillMode: "forwards" }}>
                         <motion.a
                             href="#projects"
                             aria-label="Explore my work projects"
-                            whileHover={{ scale: 1.08, boxShadow: "0 0 60px rgba(168,85,247,0.7)" }}
-                            whileTap={{ scale: 0.95 }}
-                            className="glass-premium ripple-btn w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-purple-600/80 rounded-full text-white font-black text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase transition-all shadow-lg text-center"
+                            whileHover={isMobile ? {} : { scale: 1.08, boxShadow: "0 0 60px rgba(168,85,247,0.7)" }}
+                            whileTap={isMobile ? {} : { scale: 0.95 }}
+                            className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-purple-600/80 rounded-full text-white font-black text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase transition-all shadow-lg text-center"
                         >
                             EXPLORE MY WORK ↓
                         </motion.a>
 
                         <motion.a
                             href="#about"
-                            whileHover={{ scale: 1.08, backgroundColor: "rgba(255,255,255,0.08)", boxShadow: "0 0 30px rgba(168,85,247,0.3)" }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={isMobile ? {} : { scale: 1.08, backgroundColor: "rgba(255,255,255,0.08)", boxShadow: "0 0 30px rgba(168,85,247,0.3)" }}
+                            whileTap={isMobile ? {} : { scale: 0.95 }}
                             className="w-full sm:w-auto px-8 py-4 md:py-5 border border-purple-500/30 rounded-full text-purple-200 font-black text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase transition-all backdrop-blur-md text-center"
                         >
                             MY STORY

@@ -113,12 +113,14 @@ export default function NebulaBackground() {
             {/* Flowing gradient base */}
             <div className="absolute inset-0 hero-gradient" />
 
-            {/* Particles */}
-            <Particles
-                id="tsparticles"
-                options={options}
-                className="absolute inset-0"
-            />
+            {/* Particles - Disabled on mobile for performance */}
+            {!isMobile && (
+                <Particles
+                    id="tsparticles"
+                    options={options}
+                    className="absolute inset-0"
+                />
+            )}
 
             {/* Radial depth glow */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(168,85,247,0.12),transparent_60%)]" />

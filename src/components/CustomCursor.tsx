@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { motion, useSpring, useMotionValue } from "framer-motion";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 export default function CustomCursor() {
+    const isMobile = useIsMobile();
     const [isVisible, setIsVisible] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
     const springConfig = { damping: 25, stiffness: 500 };
-    const trailConfig = { damping: 40, stiffness: 150 };
 
     const borderX = useSpring(cursorX, springConfig);
     const borderY = useSpring(cursorY, springConfig);
@@ -21,8 +22,8 @@ export default function CustomCursor() {
     const trail2X = useSpring(cursorX, { damping: 50, stiffness: 100 });
     const trail2Y = useSpring(cursorY, { damping: 50, stiffness: 100 });
 
-
     useEffect(() => {
+        if (isMobile) return;
         const moveCursor = (e: MouseEvent) => {
             // Set initial position immediately to avoid jump
             if (!isVisible) {
@@ -65,7 +66,7 @@ export default function CustomCursor() {
 
     return (
         <>
-            {isVisible && (
+            {isVisible && !isMobile && (
                 <>
                     {/* Trail 2 (Slowest) */}
                     <motion.div

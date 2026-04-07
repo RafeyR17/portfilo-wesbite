@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Check, Github, Linkedin, Facebook, Instagram } from "lucide-react";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -82,8 +83,10 @@ export default function Contact() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+    const isMobile = useIsMobile();
 
     useEffect(() => {
+        if (isMobile) return; // Disable GSAP on mobile
         const ctx = gsap.context(() => {
             const form = sectionRef.current?.querySelector(".contact-form");
             if (form) {
@@ -102,7 +105,7 @@ export default function Contact() {
         }, sectionRef);
 
         return () => ctx.revert();
-    }, []);
+    }, [isMobile]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -244,8 +247,8 @@ export default function Contact() {
                                     key="submit"
                                     type="submit"
                                     disabled={isSubmitting}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
+                                    whileHover={isMobile ? {} : { scale: 1.02 }}
+                                    whileTap={isMobile ? {} : { scale: 0.98 }}
                                     className="w-full py-4 md:py-5 bg-purple-600 hover:bg-purple-500 disabled:opacity-60 text-white rounded-xl md:rounded-2xl font-bold uppercase tracking-widest text-xs md:text-sm transition-all shadow-[0_0_25px_rgba(168,85,247,0.3)] hover:shadow-[0_0_35px_rgba(168,85,247,0.5)] flex items-center justify-center gap-3"
                                 >
                                     {isSubmitting ? (

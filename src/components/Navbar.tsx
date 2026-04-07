@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
+import { useIsMobile } from "@/hooks/useMediaQuery";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const NAV_LINKS = [
@@ -22,6 +24,7 @@ export default function Navbar() {
     const [hidden, setHidden] = useState(false);
     const [activeSection, setActiveSection] = useState("");
     const [mobileOpen, setMobileOpen] = useState(false);
+    const isMobile = useIsMobile();
     const lastScrollY = useRef(0);
     const navRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
@@ -40,6 +43,15 @@ export default function Navbar() {
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    // Disable scroll on body when mobile menu is open
+    useEffect(() => {
+        if (mobileOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [mobileOpen]);
 
     // Scroll spy — highlight active section
     useEffect(() => {
@@ -96,9 +108,16 @@ export default function Navbar() {
                     }`}
             >
                 <motion.div
-                    initial={{ y: -100, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+                    initial="hidden"
+                    animate="visible"
+                    variants={{
+                        hidden: { y: -100, opacity: 0 },
+                        visible: { 
+                            y: 0, 
+                            opacity: 1,
+                            transition: { delay: 0.2, duration: isMobile ? 0 : 0.8, ease: "easeOut" }
+                        }
+                    }}
                     className={`flex items-center gap-2 md:gap-6 px-4 md:px-6 py-3 rounded-full transition-all duration-500 ${scrolled
                         ? "bg-[rgba(15,0,30,0.6)] backdrop-blur-2xl saturate-[180%] border border-purple-500/20 shadow-[0_8px_32px_rgba(168,85,247,0.12)]"
                         : "bg-white/[0.03] backdrop-blur-xl border border-white/[0.06]"
@@ -188,55 +207,66 @@ export default function Navbar() {
                 </motion.div>
             </nav>
 
-            {/* Mobile Menu Overlay */}
+            {/* Mobile Sidebar (Hamburger Menu) */}
             <AnimatePresence>
                 {mobileOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[99] bg-black/90 backdrop-blur-2xl flex flex-col items-center justify-center gap-8"
-                        onClick={() => setMobileOpen(false)}
-                    >
-                        {NAV_LINKS.map((link, i) => (
-                            <motion.a
-                                key={link.name}
-                                href={link.href}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                                transition={{ delay: i * 0.1 }}
-                                onClick={(e) => {
-                                    if (link.href.startsWith("/") || link.href.startsWith("#")) {
-                                        e.preventDefault();
-                                        handleNavClick(link);
-                                    }
-                                }}
-                                className={`text-2xl md:text-3xl font-serif font-bold tracking-widest transition-colors py-2 ${activeSection === link.href
-                                    ? "text-purple-400"
-                                    : "text-white/60 hover:text-purple-300"
-                                    }`}
-                            >
-                                {link.name}
-                            </motion.a>
-                        ))}
-                        <motion.a
-                            href="#contact"
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ delay: NAV_LINKS.length * 0.1 }}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleNavClick({ name: "Contact", href: "/#contact" });
-                            }}
-                            className="mt-6 px-10 py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold uppercase tracking-[0.2em] text-xs md:text-sm transition-all shadow-[0_0_25px_rgba(168,85,247,0.4)]"
+                    <>
+                        {/* Overlay backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm"
+                            onClick={() => setMobileOpen(false)}
+                        />
+                        {/* Sidebar */}
+                        <motion.div
+                            initial={isMobile ? { x: "100%" } : { opacity: 0 }}
+                            animate={isMobile ? { x: 0 } : { opacity: 1 }}
+                            exit={isMobile ? { x: "100%" } : { opacity: 0 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed top-0 right-0 bottom-0 w-[280px] z-[120] bg-[rgba(10,5,20,0.98)] backdrop-blur-2xl border-l border-white/10 p-8 pt-24 shadow-2xl overflow-y-auto"
                         >
-                            Hire Me →
-                        </motion.a>
-                    </motion.div>
+                            <div className="flex flex-col gap-6">
+                                {NAV_LINKS.map((link) => (
+                                    <a
+                                        key={link.name}
+                                        href={link.href}
+                                        onClick={(e) => {
+                                            if (link.href.startsWith("/") || link.href.startsWith("#")) {
+                                                e.preventDefault();
+                                                handleNavClick(link);
+                                            }
+                                        }}
+                                        className={`text-xl font-serif font-bold tracking-[0.1em] transition-colors py-2 border-b border-white/5 ${activeSection === link.href
+                                            ? "text-purple-400"
+                                            : "text-white/70 hover:text-white"
+                                            }`}
+                                    >
+                                        {link.name}
+                                    </a>
+                                ))}
+                                <a
+                                    href="#contact"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleNavClick({ name: "Contact", href: "/#contact" });
+                                    }}
+                                    className="mt-4 px-6 py-3 bg-purple-600 text-white rounded-xl font-bold uppercase tracking-[0.1em] text-xs text-center transition-all shadow-lg active:scale-95"
+                                >
+                                    Hire Me
+                                </a>
+                            </div>
+
+                            <div className="absolute bottom-8 left-8 right-8 text-center">
+                                <p className="text-[10px] text-white/30 uppercase tracking-[0.2em]">Rafey Riaz &copy; 2026</p>
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
+
         </>
     );
 }

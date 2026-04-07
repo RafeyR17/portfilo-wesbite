@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GraduationCap, Trophy, Laptop, Medal, Rocket, FileBadge } from "lucide-react";
+import { motion } from "framer-motion";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,23 +48,13 @@ const JOURNEY = [
     },
 ];
 
-function useIsMobile(breakpoint = 768) {
-    const [isMobile, setIsMobile] = useState(false);
-    useEffect(() => {
-        const check = () => setIsMobile(window.innerWidth < breakpoint);
-        check();
-        window.addEventListener("resize", check);
-        return () => window.removeEventListener("resize", check);
-    }, [breakpoint]);
-    return isMobile;
-}
-
 export default function About() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const lineRef = useRef<HTMLDivElement>(null);
     const isMobile = useIsMobile();
 
     useEffect(() => {
+        if (isMobile) return; // Disable GSAP on mobile
         const ctx = gsap.context(() => {
             // 1. Draw central timeline line progressively
             if (lineRef.current) {
@@ -76,7 +68,7 @@ export default function About() {
                             trigger: sectionRef.current,
                             start: "top 95%",
                             end: "bottom 90%",
-                            scrub: isMobile ? 0.5 : 1.5, // Faster/Simpler scrub on mobile
+                            scrub: 1.5,
                         },
                     }
                 );
@@ -168,7 +160,15 @@ export default function About() {
                                         className={`w-full md:w-1/2 pl-[60px] md:pl-0 ${isLeft ? "md:pr-16" : "md:pl-16 md:ml-auto"
                                             }`}
                                     >
-                                        <div className="timeline-card group cursor-default relative">
+                                        <motion.div 
+                                            className="timeline-card group cursor-default relative"
+                                            whileHover={isMobile ? {} : {
+                                                scale: 1.05,
+                                                y: -6,
+                                                transition: { duration: 0.3, ease: "easeOut" }
+                                            }}
+                                            whileFocus={isMobile ? {} : { scale: 1.05, y: -6 }}
+                                        >
                                             <div className="glass-card hover-lift hover-glow p-6 md:p-10 rounded-2xl md:rounded-3xl border border-purple-500/20 backdrop-blur-2xl bg-purple-950/20 relative overflow-hidden">
 
                                                 {/* Holographic edge shimmer (CSS trick) */}
@@ -189,14 +189,18 @@ export default function About() {
                                                 <h3 className="text-lg md:text-3xl font-serif font-bold text-white mb-3 md:mb-4 leading-tight group-hover:text-purple-200 transition-colors">
                                                     {item.title}
                                                 </h3>
-                                                <p className="text-white/70 leading-relaxed font-sans text-xs md:text-base font-light">
+                                                <motion.p 
+                                                    className="text-white/70 leading-relaxed font-sans text-xs md:text-base font-light"
+                                                    whileHover={isMobile ? {} : { scale: 1.02 }}
+                                                    whileTap={isMobile ? {} : { scale: 0.98 }}
+                                                >
                                                     {item.desc}
-                                                </p>
+                                                </motion.p>
 
                                                 {/* Optional interactive particles on hover (css trick) */}
                                                 <div className="absolute inset-0 border-2 border-transparent group-hover:border-purple-500/10 rounded-2xl md:rounded-3xl transition-colors duration-700 pointer-events-none" />
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     </div>
                                 </div>
                             );
