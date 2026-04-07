@@ -59,14 +59,17 @@ const cardVariants = {
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
 export default function Projects() {
+    const [mounted, setMounted] = useState(false);
     const sectionRef = useRef<HTMLDivElement>(null);
-    const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
-    const shouldReduceMotion = useReducedMotion();
     const [init, setInit] = useState(false);
     const isMobile = useIsMobile();
 
     useEffect(() => {
-        if (isMobile) return; // Skip particles on mobile
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (isMobile) return;
         import("@tsparticles/react").then(({ initParticlesEngine }) => {
             initParticlesEngine(async (engine) => {
                 await loadSlim(engine);
@@ -101,6 +104,10 @@ export default function Projects() {
         detectRetina: true,
     };
 
+    // Helper for mobile-safe motion components
+    const MotionContainer = !mounted || isMobile ? "div" : motion.div;
+    const MotionItem = !mounted || isMobile ? "div" : motion.div;
+
     return (
         <section
             ref={sectionRef}
@@ -124,15 +131,17 @@ export default function Projects() {
                 <div className="absolute bottom-[10%] right-[-10%] w-[50%] h-[50%] bg-fuchsia-900/15 blur-[160px] rounded-full" />
             </div>
 
-            <motion.div
-                variants={sectionVariants}
-                initial={isMobile ? "visible" : "hidden"}
-                whileInView="visible"
-                viewport={{ once: true }}
+            <MotionContainer
+                {...(!isMobile && mounted ? {
+                    variants: sectionVariants,
+                    initial: "hidden",
+                    whileInView: "visible",
+                    viewport: { once: true }
+                } : {})}
             >
                 {/* ── Heading ── */}
-                <motion.div
-                    variants={isMobile ? {} : headingVariants}
+                <MotionItem
+                    {...(!isMobile && mounted ? { variants: headingVariants } : {})}
                     className="text-center mb-16 md:mb-24 space-y-6"
                 >
                     <h2 className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold text-white text-glow">
@@ -145,14 +154,14 @@ export default function Projects() {
                         A curated showcase of high-performance AI tools, scalable e-commerce platforms, 
                         and production-grade full-stack applications.
                     </p>
-                </motion.div>
+                </MotionItem>
 
                 {/* ── Project Grid (2-column desktop, 1-column mobile) ── */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12">
                     {PROJECTS.map((project, index) => (
-                        <motion.div
+                        <MotionItem
                             key={project.id}
-                            variants={isMobile ? {} : cardVariants}
+                            {...(!isMobile && mounted ? { variants: cardVariants } : {})}
                             className={`group relative rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden transition-all duration-700 ease-[power4.out]
                          bg-[rgba(30,0,60,0.18)] backdrop-blur-2xl
                          border border-[rgba(168,85,247,0.35)]
@@ -249,13 +258,13 @@ export default function Projects() {
                                     )}
                                 </div>
                             </div>
-                        </motion.div>
+                        </MotionItem>
                     ))}
                 </div>
 
                 {/* ── ML Experiments Link ── */}
-                <motion.div
-                    variants={isMobile ? {} : cardVariants}
+                <MotionItem
+                    {...(!isMobile && mounted ? { variants: cardVariants } : {})}
                     className="mt-16 md:mt-24 flex justify-center"
                 >
                     <Link
@@ -273,8 +282,8 @@ export default function Projects() {
                         </span>
                         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-600/0 via-purple-400/20 to-purple-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
                     </Link>
-                </motion.div>
-            </motion.div>
+                </MotionItem>
+            </MotionContainer>
         </section>
     );
 }
